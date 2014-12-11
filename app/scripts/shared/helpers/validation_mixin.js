@@ -34,7 +34,7 @@ var validationMixin = {
     },
 
     isRequired: function(val) {
-      if (_.isNumber(val)) {
+      if (_.isNumber(val) || _.isBoolean(val)) {
         return !(_.isUndefined(val)) || ('is required');
       }
 

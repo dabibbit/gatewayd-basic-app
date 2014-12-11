@@ -153,7 +153,7 @@ var Payments = React.createClass({
           </div>
           <div className="row">
             <ul className="list-group">
-            {paymentItems}
+              {paymentItems}
             </ul>
           </div>
         </div>
