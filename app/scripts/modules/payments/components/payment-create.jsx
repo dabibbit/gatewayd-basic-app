@@ -20,9 +20,9 @@ var PaymentCreate = React.createClass({
     address: 'string',
     amount: 'number',
     currency: 'string',
-    destinationTag: 'number',
-    sourceTag: 'number',
-    invoiceId: 'string',
+    destination_tag: 'number',
+    source_tag: 'number',
+    invoice_id: 'string',
     memo: 'string'
   },
 
@@ -100,9 +100,9 @@ var PaymentCreate = React.createClass({
       address: this.formatInput(this.refs.address, this.typeMap.address),
       amount: this.formatInput(this.refs.amount, this.typeMap.amount),
       currency: this.formatInput(this.refs.currency, this.typeMap.currency),
-      destinationTag: this.formatInput(this.refs.destinationTag, this.typeMap.destinationTag),
-      sourceTag: this.formatInput(this.refs.sourceTag, this.typeMap.sourceTag),
-      invoiceId: this.formatInput(this.refs.invoiceId, this.typeMap.invoiceId),
+      destination_tag: this.formatInput(this.refs.destination_tag, this.typeMap.destination_tag),
+      source_tag: this.formatInput(this.refs.source_tag, this.typeMap.source_tag),
+      invoice_id: this.formatInput(this.refs.invoice_id, this.typeMap.invoice_id),
       memo: this.formatInput(this.refs.memo, this.typeMap.memo)
     };
 
@@ -115,9 +115,9 @@ var PaymentCreate = React.createClass({
     this.validateAddress(true);
     this.validateField('amount', true);
     this.validateField('currency', true);
-    this.validateField('destinationTag', true);
-    this.validateField('sourceTag', true);
-    this.validateField('invoiceId', true);
+    this.validateField('destination_tag', true);
+    this.validateField('source_tag', true);
+    this.validateField('invoice_id', true);
     this.validateField('memo', true);
 
     paymentActions.sendPaymentAttempt(payment);
@@ -149,9 +149,9 @@ var PaymentCreate = React.createClass({
       address: {},
       amount: {},
       currency: {},
-      destinationTag: {},
-      sourceTag: {},
-      invoiceId: {},
+      destination_tag: {},
+      source_tag: {},
+      invoice_id: {},
       memo: {},
       disableForm: false,
       submitButtonLabel: 'Submit Payment',
@@ -204,25 +204,25 @@ var PaymentCreate = React.createClass({
             </Row>
             <Row>
               <Col xs={6}>
-                <Input type="tel" ref="destinationTag"
+                <Input type="tel" ref="destination_tag"
                   label="Destination Tag:"
-                  bsStyle={this.validationMap[this.state.destinationTag.isValid]}
-                  disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'destinationTag', false)} />
-                <Label bsStyle="warning">{this.state.destinationTag.errorMessage}</Label>
+                  bsStyle={this.validationMap[this.state.destination_tag.isValid]}
+                  disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'destination_tag', false)} />
+                <Label bsStyle="warning">{this.state.destination_tag.errorMessage}</Label>
               </Col>
               <Col xs={6}>
-                <Input type="tel" ref="sourceTag"
+                <Input type="tel" ref="source_tag"
                   label="Source Tag:"
-                  bsStyle={this.validationMap[this.state.sourceTag.isValid]}
-                  disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'sourceTag', false)} />
-                <Label bsStyle="warning">{this.state.sourceTag.errorMessage}</Label>
+                  bsStyle={this.validationMap[this.state.source_tag.isValid]}
+                  disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'source_tag', false)} />
+                <Label bsStyle="warning">{this.state.source_tag.errorMessage}</Label>
               </Col>
             </Row>
-            <Input type="text" ref="invoiceId"
-              label="Invoice Id:"
-              bsStyle={this.validationMap[this.state.invoiceId.isValid]}
-              disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'invoiceId', false)} />
-            <Label bsStyle="warning">{this.state.invoiceId.errorMessage}</Label>
+            <Input type="text" ref="invoice_id"
+              label="Invoice Id (SHA256):"
+              bsStyle={this.validationMap[this.state.invoice_id.isValid]}
+              disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'invoice_id', false)} />
+            <Label bsStyle="warning">{this.state.invoice_id.errorMessage}</Label>
             <Input type="textarea" ref="memo"
               label="Memo:"
               bsStyle={this.validationMap[this.state.memo.isValid]}

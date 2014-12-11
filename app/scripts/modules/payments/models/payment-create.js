@@ -15,9 +15,9 @@ var Payment = Backbone.Model.extend({
     address: '',
     amount: 0,
     currency: '',
-    destinationTag: 0,
-    sourceTag: 0,
-    invoiceId: '',
+    destination_tag: 0,
+    source_tag: 0,
+    invoice_id: '',
     memo: ''
   },
 
@@ -36,15 +36,15 @@ var Payment = Backbone.Model.extend({
       minLength: 1,
       isRequired: true
     },
-    destinationTag: {
+    destination_tag: {
       type: 'number',
       isRequired: false
     },
-    sourceTag: {
+    source_tag: {
       type: 'number',
       isRequired: false
     },
-    invoiceId: {
+    invoice_id: {
       type: 'string',
       minLength: 1,
       isRequired: false
