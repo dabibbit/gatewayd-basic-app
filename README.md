@@ -56,6 +56,10 @@ _* If admin@example.com does not work as the username, check_ **/config/config.j
     ```
     npm run dev
     ```
+or for compressed production builds without live reload or watch:
+    ```
+    npm run prod
+    ```
     If you get an EMFILE error, you need to increase the maximum number of files than can be opened and processes that can be used:
 
     ```
