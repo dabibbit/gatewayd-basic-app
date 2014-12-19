@@ -23,7 +23,7 @@ var PaymentCreate = React.createClass({
     destination_tag: 'number',
     source_tag: 'number',
     invoice_id: 'string',
-    memo: 'string'
+    memos: 'string'
   },
 
   formatInput: function(rawInputRef, type) {
@@ -103,7 +103,7 @@ var PaymentCreate = React.createClass({
       destination_tag: this.formatInput(this.refs.destination_tag, this.typeMap.destination_tag),
       source_tag: this.formatInput(this.refs.source_tag, this.typeMap.source_tag),
       invoice_id: this.formatInput(this.refs.invoice_id, this.typeMap.invoice_id),
-      memo: this.formatInput(this.refs.memo, this.typeMap.memo)
+      memos: this.formatInput(this.refs.memos, this.typeMap.memos)
     };
 
     this.setState({
@@ -118,7 +118,7 @@ var PaymentCreate = React.createClass({
     this.validateField('destination_tag', true);
     this.validateField('source_tag', true);
     this.validateField('invoice_id', true);
-    this.validateField('memo', true);
+    this.validateField('memos', true);
 
     paymentActions.sendPaymentAttempt(payment);
   },
@@ -152,7 +152,7 @@ var PaymentCreate = React.createClass({
       destination_tag: {},
       source_tag: {},
       invoice_id: {},
-      memo: {},
+      memos: {},
       disableForm: false,
       submitButtonLabel: 'Submit Payment',
     };
@@ -170,6 +170,10 @@ var PaymentCreate = React.createClass({
   },
 
   render: function() {
+    var requiredLabel = (
+      <Label bsStyle="info">Required</Label>
+    );
+
     return (
       <Modal
         title="Send Payment"
@@ -180,25 +184,30 @@ var PaymentCreate = React.createClass({
         <div className="modal-body">
           <form onSubmit={this.handleSubmit}>
             <Input type="text" ref="address"
-              label={<div><Label bsStyle="info">Required</Label> Destination Address: </div>}
+              label={<div>{requiredLabel} Destination Address: </div>}
               bsStyle={this.validationMap[this.state.address.isValid]}
               disabled={this.state.disableForm || this.state.disableAddressField}
-              autoFocus={true} onBlur={this.validateAddress.bind(this, false)} />
+              autoFocus={true} onBlur={this.validateAddress.bind(this, false)}
+              hasFeedback
+            />
             <Label bsStyle="warning">{this.state.address.errorMessage}</Label>
             <Row>
               <Col xs={6}>
-
                 <Input type="tel" ref="amount"
-                  label={<div><Label bsStyle="info">Required</Label> Amount: </div>}
+                  label={<div>{requiredLabel} Amount: </div>}
                   bsStyle={this.validationMap[this.state.amount.isValid]}
-                  disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'amount', false)} />
+                  disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'amount', false)}
+                  hasFeedback
+                />
                 <Label bsStyle="warning">{this.state.amount.errorMessage}</Label>
               </Col>
               <Col xs={6}>
                 <Input type="text" ref="currency"
-                  label={<div><Label bsStyle="info">Required</Label> Currency: </div>}
+                  label={<div>{requiredLabel} Currency: </div>}
                   bsStyle={this.validationMap[this.state.currency.isValid]}
-                  disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'currency', false)} />
+                  disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'currency', false)}
+                  hasFeedback
+                />
                 <Label bsStyle="warning">{this.state.currency.errorMessage}</Label>
               </Col>
             </Row>
@@ -207,27 +216,35 @@ var PaymentCreate = React.createClass({
                 <Input type="tel" ref="destination_tag"
                   label="Destination Tag:"
                   bsStyle={this.validationMap[this.state.destination_tag.isValid]}
-                  disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'destination_tag', false)} />
+                  disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'destination_tag', false)}
+                  hasFeedback
+                />
                 <Label bsStyle="warning">{this.state.destination_tag.errorMessage}</Label>
               </Col>
               <Col xs={6}>
                 <Input type="tel" ref="source_tag"
                   label="Source Tag:"
                   bsStyle={this.validationMap[this.state.source_tag.isValid]}
-                  disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'source_tag', false)} />
+                  disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'source_tag', false)}
+                  hasFeedback
+                />
                 <Label bsStyle="warning">{this.state.source_tag.errorMessage}</Label>
               </Col>
             </Row>
             <Input type="text" ref="invoice_id"
               label="Invoice Id (SHA256):"
               bsStyle={this.validationMap[this.state.invoice_id.isValid]}
-              disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'invoice_id', false)} />
+              disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'invoice_id', false)}
+              hasFeedback
+            />
             <Label bsStyle="warning">{this.state.invoice_id.errorMessage}</Label>
-            <Input type="textarea" ref="memo"
-              label="Memo:"
-              bsStyle={this.validationMap[this.state.memo.isValid]}
-              disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'memo', false)} />
-            <Label bsStyle="warning">{this.state.memo.errorMessage}</Label>
+            <Input type="textarea" ref="memos"
+              label="Memos:"
+              bsStyle={this.validationMap[this.state.memos.isValid]}
+              disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'memos', false)}
+              hasFeedback
+            />
+            <Label bsStyle="warning">{this.state.memos.errorMessage}</Label>
             <Button className="pull-right" bsStyle="primary" bsSize="large" type="submit"
               disabled={this.state.disableForm || this.state.disableSubmitButton}
               block>

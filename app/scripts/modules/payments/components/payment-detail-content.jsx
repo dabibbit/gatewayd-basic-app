@@ -93,9 +93,9 @@ var PaymentDetailContent = React.createClass({
         </div>
         <br />
         <div className="row">
-          Memo: {
-            this.props.model.get('memo') ?
-              sjcl.codec.utf8String.fromBits(sjcl.codec.hex.toBits(this.props.model.get('memo'))) : 'none'
+          Memos: {
+            this.props.model.get('memos') ?
+              sjcl.codec.utf8String.fromBits(sjcl.codec.hex.toBits(this.props.model.get('memos'))) : 'none'
           }
         </div>
       </div>

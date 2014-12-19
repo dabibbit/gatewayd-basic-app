@@ -18,7 +18,7 @@ var Payment = Backbone.Model.extend({
     destination_tag: 0,
     source_tag: 0,
     invoice_id: '',
-    memo: ''
+    memos: ''
   },
 
   validationRules: {
@@ -49,7 +49,7 @@ var Payment = Backbone.Model.extend({
       minLength: 1,
       isRequired: false
     },
-    memo: {
+    memos: {
       type: 'string',
       minLength: 1,
       isRequired: false
