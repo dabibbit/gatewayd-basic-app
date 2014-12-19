@@ -4,6 +4,9 @@
     "flagAsDone": "flagAsDone",
     "retryFailedPayment": "retryFailedPayment",
     "filterByState": "filterByState",
+    "reset": "reset",
+    "validateField": "validateField",
+    "validateAddress": "validateAddress",
     "sendPaymentAttempt": "sendPaymentAttempt",
     "sendPaymentComplete": "sendPaymentComplete",
     "fetchRippleTransactions": "fetchRippleTransactions"

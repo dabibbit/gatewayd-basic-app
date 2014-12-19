@@ -4,6 +4,7 @@ var _ = require('lodash');
 var $ = require('jquery');
 var RippleName = require('ripple-name');
 var Backbone = require('backbone');
+var ValidationMixins = require('../../../shared/helpers/validation_mixin');
 var adminDispatcher = require('../../../dispatchers/admin-dispatcher');
 var paymentConfigActions = require('../config.json').actions;
 var session = require('../../session/models/session');
@@ -23,36 +24,28 @@ var Payment = Backbone.Model.extend({
 
   validationRules: {
     address: {
-      type: 'string',
-      minLength: 1, // some min for ripple address, but none for ripple name
-      isRequired: true
+      validators: ['isRequired', 'isString', 'minLength:1']
+    },
+    unprocessed_address: {
+      validators: ['isRequired', 'isString', 'minLength:1']
     },
     amount: {
-      type: 'number', // decimal,
-      isRequired: true
+      validators: ['isRequired', 'isNumber'] // decimal
     },
     currency: {
-      type: 'string',
-      minLength: 1,
-      isRequired: true
+      validators: ['isRequired', 'isString', 'minLength:1']
     },
     destination_tag: {
-      type: 'number',
-      isRequired: false
+      validators: ['isNumber']
     },
     source_tag: {
-      type: 'number',
-      isRequired: false
+      validators: ['isNumber']
     },
     invoice_id: {
-      type: 'string',
-      minLength: 1,
-      isRequired: false
+      validators: ['isString', 'minLength:1']
     },
     memos: {
-      type: 'string',
-      minLength: 1,
-      isRequired: false
+      validators: ['isString', 'minLength:1']
     }
   },
 
@@ -65,87 +58,18 @@ var Payment = Backbone.Model.extend({
   dispatchCallback: function(payload) {
     var handleAction = {};
 
+    handleAction[paymentConfigActions.reset] = this.reset;
     handleAction[paymentConfigActions.sendPaymentAttempt] = this.sendPaymentAttempt;
+    handleAction[paymentConfigActions.validateField] = this.validateField;
+    handleAction[paymentConfigActions.validateAddress] = this.validateAddress;
 
     if (!_.isUndefined(handleAction[payload.actionType])) {
       handleAction[payload.actionType](payload.data);
     }
   },
 
-  validationErrors: [],
-
-  handleObject: function(value, minLength) {
-    if (value === null) {
-      return false;
-    }
-
-    if (Array.isArray(value)) {
-      return value.length >= minLength;
-    }
-
-    return Object.keys(value).length >= minLength;
-  },
-
-  handleString: function(value, minLength) {
-    return !!value && value.length >= minLength;
-  },
-
-  testValid: function(value, attr, rules) {
-    if (value === null && !rules[attr].isRequired) {
-      return true;
-    }
-
-    var testValid = {
-      object: this.handleObject,
-      string: this.handleString,
-    };
-    var isDefined = !_.isUndefined(value);
-    var type = rules[attr].type === 'array' ? 'object' : rules[attr].type;
-    var isValid = typeof value === 'number' ? !isNaN(value) : typeof value === type;
-
-    if (isValid && !_.isUndefined(testValid[typeof value])) {
-      isValid = testValid[typeof value](value, rules[attr].minLength);
-    }
-
-    if (!isDefined) {
-      this.validationErrors.push(attr + ' is undefined');
-    } else if (!isValid) {
-      this.validationErrors.push(attr + ' is invalid');
-    }
-
-    return isDefined && isValid;
-  },
-
-  validate: function(attributes) {
-    var _this = this;
-
-    this.validationErrors = [];
-
-    var isValid = _.reduce(attributes, function(accumulator, value, attr) {
-      if (_.isUndefined(_this.validationRules[attr])) {
-        return accumulator && true;
-      }
-
-      if (_this.testValid(value, attr, _this.validationRules)) {
-        return accumulator && true;
-      } else {
-        return false;
-      }
-    }, true);
-
-    if (!Object.keys(attributes).length) {
-      isValid = false;
-    }
-
-    if (!isValid) {
-      return this.validationErrors.join(', ');
-    }
-  },
-
-  isValid: function() {
-    this.validate(this.attributes);
-
-    return !this.validationError;
+  reset: function() {
+    this.clear().set(this.defaults);
   },
 
   postPayment: function() {
@@ -158,19 +82,16 @@ var Payment = Backbone.Model.extend({
     });
   },
 
-  sendPaymentAttempt: function(payment) {
-    this.validateAddress(payment.address);
+  validateField: function(data) {
+    var attributeValidation = this.attributeIsValid(data.fieldName, data.fieldValue);
+    var updatedField = {};
 
-    if (this.isValid()) {
-      this.postPayment();
-    }
-  },
+    updatedField[data.fieldName] = data.fieldValue;
 
-  handleFieldValidation: function(validationResult, fieldRef) {
-    if (!_.isUndefined(validationResult)) {
-      this.trigger('validationComplete', false, fieldRef, validationResult);
+    if (attributeValidation.result) {
+      this.trigger('validationComplete', true, data.fieldName, '');
     } else {
-      this.trigger('validationComplete', true, fieldRef, '');
+      this.trigger('validationComplete', false, data.fieldName, attributeValidation.errorMessages);
     }
   },
 
@@ -179,32 +100,32 @@ var Payment = Backbone.Model.extend({
 
     RippleName.lookup(address)
     .then(function(data) {
-      var addressAttr;
-
       if (data.exists) {
-        addressAttr = {
-          address: data.address
-        };
+        _this.validateField({
+          fieldName: 'unprocessed_address',
+          fieldValue: data.address
+        });
 
-        _this.set(addressAttr);
-        _this.handleFieldValidation(_this.validate(addressAttr), 'address');
+        _this.trigger('addressProcessed', data.address);
       } else {
-        _this.trigger('validationComplete', false, 'address', 'ripple name/address does not exist');
+        _this.trigger('validationComplete', false, 'unprocessed_address', 'ripple name/address does not exist');
       }
     })
     .error(function() {
-      _this.trigger('validationComplete', false, 'address', 'ripple name lookup failed');
+      _this.trigger('validationComplete', false, 'unprocessed_address', 'ripple name lookup failed');
     });
   },
 
-  validateField: function(fieldName, fieldValue) {
-    var updatedField = {};
+  sendPaymentAttempt: function(payment) {
+    this.set(payment);
 
-    updatedField[fieldName] = fieldValue;
-    this.set(updatedField);
-
-    this.handleFieldValidation(this.validate(updatedField), fieldName);
+    if (this.isValid()) {
+      this.postPayment();
+    }
   }
 });
+
+//add validation mixin
+_.extend(Payment.prototype, ValidationMixins);
 
 module.exports = Payment;

@@ -119,6 +119,10 @@ var validationMixin = {
   },
 
   attributeIsValid: function(attribute, value) {
+    if (_.isUndefined(this.validationRules[attribute])) {
+      return false;
+    }
+
     var errors = this.testValid(value, attribute, this.validationRules[attribute]);
 
     if (_.isEmpty(errors)) {

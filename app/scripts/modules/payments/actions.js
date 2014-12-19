@@ -1,3 +1,5 @@
+"use strict";
+
 var adminDispatcher = require('../../dispatchers/admin-dispatcher');
 var paymentActions = require('./config.json').actions;
 
@@ -27,6 +29,29 @@ var actions = {
     adminDispatcher.handleEvent({
       actionType: paymentActions.filterByState,
       data: state
+    });
+  },
+
+  reset: function() {
+    adminDispatcher.handleEvent({
+      actionType: paymentActions.reset
+    });
+  },
+
+  validateField: function(fieldName, fieldValue) {
+    adminDispatcher.handleEvent({
+      actionType: paymentActions.validateField,
+      data: {
+        fieldName: fieldName,
+        fieldValue: fieldValue
+      }
+    });
+  },
+
+  validateAddress: function(address) {
+    adminDispatcher.handleEvent({
+      actionType: paymentActions.validateAddress,
+      data: address
     });
   },
 
