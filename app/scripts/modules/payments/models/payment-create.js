@@ -84,9 +84,6 @@ var Payment = Backbone.Model.extend({
 
   validateField: function(data) {
     var attributeValidation = this.attributeIsValid(data.fieldName, data.fieldValue);
-    var updatedField = {};
-
-    updatedField[data.fieldName] = data.fieldValue;
 
     if (attributeValidation.result) {
       this.trigger('validationComplete', true, data.fieldName, '');
