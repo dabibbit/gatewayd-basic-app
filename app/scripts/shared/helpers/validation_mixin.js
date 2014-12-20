@@ -12,7 +12,7 @@ var validationMixin = {
     },
 
     isNumber: function(val) {
-      return _.isNumber(val) || ('is not a number');
+      return (_.isNumber(val) && !_.isNaN(val)) || ('is not a number');
     },
 
     isBoolean: function(val) {
@@ -55,10 +55,32 @@ var validationMixin = {
   },
 
   testValid: function(val, attr, rule) {
+
+    // ignore validation on empty/undefined attributes when attribute is not required
+    var isRequired;
+
+    if (_.indexOf(rule.validators, 'isRequired') > -1) {
+      isRequired = true;
+    }
+
+    if (_.isNumber(val) || _.isBoolean(val)) {
+      if (_.isUndefined(val) && !isRequired) {
+        return null;
+      }
+    } else {
+      if (_.isEmpty(val) && !isRequired) {
+        return null;
+      }
+    }
+
     var errors = [],
         _this = this;
 
     _.each(rule.validators, function(test) {
+      if (errors.length) {
+        return false;
+      }
+
       var args = [],
           valMethod = "";
 
@@ -93,6 +115,22 @@ var validationMixin = {
     //pass errors to validate
     if (errors.length) {
       return errors;
+    }
+  },
+
+  attributeIsValid: function(attribute, value) {
+    var errors = this.testValid(value, attribute, this.validationRules[attribute]);
+
+    if (_.isEmpty(errors)) {
+      return {
+        result: true,
+        errorMessages: null
+      };
+    } else {
+      return {
+        result: false,
+        errorMessages: errors
+      };
     }
   },
 
