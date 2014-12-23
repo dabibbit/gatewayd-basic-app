@@ -105,39 +105,6 @@ var Payments = Backbone.Collection.extend({
     this.fetch({
       headers: {
         Authorization: session.get('credentials')
-      },
-      success: function() {
-
-        // TODO - is there a faster way to do this without multiple collection iterations?
-        var newIds, diffIds;
-
-        // 'new' attribute is reset for all existing payment models
-        if (!ids.length) {
-          _.each(_this.models, function(model) {
-            model.set('new', false);
-          });
-
-          return true;
-        }
-
-        // array of current payment ids after fetch
-        newIds = _.pluck(_this.models, 'id');
-
-        // array of payment ids existing only in newIds
-        diffIds = _.reject(newIds, function(id) {
-          return ids.indexOf(id) > -1;
-        });
-
-        _.each(_this.models, function(model) {
-
-          // payments whose model Ids are in diffIds get a 'new' attribute
-          // 'new' models will be highlighted
-          if (diffIds.indexOf(model.get('id')) > -1) {
-            model.set('new', true);
-          } else {
-            model.set('new', false);
-          }
-        });
       }
     });
   },

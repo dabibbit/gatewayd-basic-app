@@ -58,11 +58,6 @@ var Payment = React.createClass({
     var paymentItemClasses = 'modal-container';
     var rippleGraphLink = 'http://www.ripplecharts.com/#/graph/' + this.props.model.get('transaction_hash');
 
-    // highlight new transactions
-    if (this.props.model.get('new')) {
-      paymentItemClasses += ' highlight';
-    }
-
     // display 'From Address' for received payments or 'To Address' for sent payments
     if (this.props.model.get('direction') === 'from-ripple') {
       fromAddress = (<Address
