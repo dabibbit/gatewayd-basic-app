@@ -6,6 +6,7 @@ var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var PaymentDetailModal = require('./payment-detail-modal.jsx');
 var Address = require('./address.jsx');
 var PaymentDetailContent = require('./payment-detail-content.jsx');
+var Chevron = require('../../../shared/components/glyphicon/chevron.jsx');
 
 var Payment = React.createClass({
   propTypes: {
@@ -13,29 +14,10 @@ var Payment = React.createClass({
     retryButtonClickHandler: React.PropTypes.func
   },
 
-  toggleDetails: function() {
-    var iconMap = {
-      down: 'pull-right glyphicon glyphicon-chevron-down',
-      up: 'pull-right glyphicon glyphicon-chevron-up'
-    };
-
-    if (this.state.chevronIcon === iconMap.down) {
-      this.setState({
-        chevronIcon: iconMap.up,
-      });
-    } else {
-      this.setState({
-        chevronIcon: iconMap.down
-      });
-    }
-
+  handleDetailIconClick: function(id) {
     this.setState({
       showDetails: !this.state.showDetails
     });
-  },
-
-  handleDetailIconClick: function(id) {
-    this.toggleDetails();
   },
 
   handleRetryButtonClick: function(id, e) {
@@ -57,7 +39,6 @@ var Payment = React.createClass({
   getInitialState: function() {
     return {
       refreshIconClasses: '',
-      chevronIcon: 'pull-right glyphicon glyphicon-chevron-down',
       showDetails: false
     };
   },
@@ -166,9 +147,9 @@ var Payment = React.createClass({
           <span className="date pull-left">
             {moment(this.props.model.get('createdAt')).format('MMM D, YYYY HH:mm z')}
           </span>
-          <span
-            className={this.state.chevronIcon}
-            onClick={this.handleDetailIconClick.bind(this, this.props.model.get('id'))}
+          <Chevron
+            clickHandler={this.handleDetailIconClick.bind(this, this.props.model.get('id'))}
+            iconClasses="pull-right"
           />
         </div>
         <div>
