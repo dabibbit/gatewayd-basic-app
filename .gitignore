@@ -3,6 +3,8 @@ app/libs/
 npm-debug.log
 app/scripts/npm-debug.log
 dist/
+build/
+secrets.*
 
 # OSX #
 
