@@ -1,7 +1,7 @@
 "use strict";
 
+var _ = require('lodash');
 var moment = require('moment');
-var sjcl = require('ripple-lib/build/sjcl');
 var Address = require('./address.jsx');
 
 var React = require('react');
@@ -93,9 +93,8 @@ var PaymentDetailContent = React.createClass({
         </div>
         <br />
         <div className="row">
-          Memos: {
-            this.props.model.get('memos') ?
-              sjcl.codec.utf8String.fromBits(sjcl.codec.hex.toBits(this.props.model.get('memos'))) : 'none'
+          Memos: { !_.isEmpty(this.props.model.get('memos')) ?
+            this.props.model.get('memos')[0].MemoData : 'none'
           }
         </div>
       </div>

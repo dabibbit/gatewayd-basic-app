@@ -20,7 +20,7 @@ var validationMixin = {
     },
 
     isArray: function(val) {
-      return _.isArray(val) || ('is not a boolean');
+      return _.isArray(val) || ('is not an array');
     },
 
     minLength: function(val, length) {

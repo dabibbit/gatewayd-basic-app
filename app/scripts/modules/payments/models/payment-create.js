@@ -19,7 +19,7 @@ var Payment = Backbone.Model.extend({
     destination_tag: 0,
     source_tag: 0,
     invoice_id: '',
-    memos: ''
+    memos: []
   },
 
   validationRules: {
@@ -45,6 +45,9 @@ var Payment = Backbone.Model.extend({
       validators: ['isString', 'minLength:1']
     },
     memos: {
+      validators: ['isArray']
+    },
+    unprocessed_memos: {
       validators: ['isString', 'minLength:1']
     }
   },
@@ -82,11 +85,26 @@ var Payment = Backbone.Model.extend({
     });
   },
 
+  createMemo: function(memoString) {
+    var memos = [];
+    var memo = {};
+
+    memo.MemoData = memoString;
+
+    memos.push(memo);
+
+    return JSON.stringify(memos);
+  },
+
   validateField: function(data) {
     var attributeValidation = this.attributeIsValid(data.fieldName, data.fieldValue);
 
     if (attributeValidation.result) {
       this.trigger('validationComplete', true, data.fieldName, '');
+
+      if (data.fieldName === 'unprocessed_memos') {
+        this.trigger('memosProcessed', this.createMemo(data.fieldValue));
+      }
     } else {
       this.trigger('validationComplete', false, data.fieldName, attributeValidation.errorMessages);
     }
@@ -114,6 +132,10 @@ var Payment = Backbone.Model.extend({
   },
 
   sendPaymentAttempt: function(payment) {
+    if (!_.isEmpty(payment.memos)) {
+      payment.memos = JSON.parse(payment.memos);
+    }
+
     this.set(payment);
 
     if (this.isValid()) {

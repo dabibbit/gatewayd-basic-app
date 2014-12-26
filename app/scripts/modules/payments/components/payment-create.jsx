@@ -24,7 +24,7 @@ var PaymentCreate = React.createClass({
     destination_tag: 'number',
     source_tag: 'number',
     invoice_id: 'string',
-    memos: 'string'
+    unprocessed_memos: 'string'
   },
 
   handleClose: function() {
@@ -38,7 +38,7 @@ var PaymentCreate = React.createClass({
       return null;
     }
 
-    return type === 'number' ? formattedInput * 1 : formattedInput;
+    return type === 'number' ? Number(formattedInput) : formattedInput;
   },
 
   buildFormObject: function(refKeys) {
@@ -148,6 +148,12 @@ var PaymentCreate = React.createClass({
     });
   },
 
+  handleMemosProcessed: function(newMemosValue) {
+    this.setState({
+      memosValue: newMemosValue
+    });
+  },
+
   dispatchSendPaymentComplete: function(model, data) {
     this.hideForm();
 
@@ -161,13 +167,14 @@ var PaymentCreate = React.createClass({
   getInitialState: function() {
     return {
       addressValue: '',
+      memosValue: '',
       unprocessed_address: {},
       amount: {},
       currency: {},
       destination_tag: {},
       source_tag: {},
       invoice_id: {},
-      memos: {},
+      unprocessed_memos: {},
       disableForm: false,
       submitButtonLabel: 'Submit Payment',
     };
@@ -179,6 +186,7 @@ var PaymentCreate = React.createClass({
     this.props.model.on('sync', this.dispatchSendPaymentComplete);
     this.props.model.on('error', this.handleSubmissionError);
     this.props.model.on('addressProcessed', this.handleAddressProcessed);
+    this.props.model.on('memosProcessed', this.handleMemosProcessed);
 
     paymentActions.reset();
   },
@@ -269,13 +277,14 @@ var PaymentCreate = React.createClass({
               hasFeedback
             />
             {errorMessageLabel(this.state.invoice_id.errorMessage)}
-            <Input type="textarea" ref="memos"
+            <Input type="textarea" ref="unprocessed_memos"
               label="Memos:"
-              bsStyle={this.validationMap[this.state.memos.inputState]}
-              disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'memos')}
+              bsStyle={this.validationMap[this.state.unprocessed_memos.inputState]}
+              disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'unprocessed_memos')}
               hasFeedback
             />
-            {errorMessageLabel(this.state.memos.errorMessage)}
+            {errorMessageLabel(this.state.unprocessed_memos.errorMessage)}
+            <Input type="hidden" ref="memos" value={this.state.memosValue} />
             <Button className="pull-right" bsStyle="primary" bsSize="large" type="submit"
               disabled={this.state.disableForm || this.state.disableSubmitButton}
               block>
