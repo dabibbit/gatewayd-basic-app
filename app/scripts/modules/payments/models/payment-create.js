@@ -16,7 +16,7 @@ var Payment = Backbone.Model.extend({
     address: '',
     amount: 0,
     currency: '',
-    destination_tag: 0,
+    destinationTag: 0,
     source_tag: 0,
     invoice_id: '',
     memos: []
@@ -35,7 +35,7 @@ var Payment = Backbone.Model.extend({
     currency: {
       validators: ['isRequired', 'isString', 'minLength:1']
     },
-    destination_tag: {
+    destinationTag: {
       validators: ['isNumber']
     },
     source_tag: {

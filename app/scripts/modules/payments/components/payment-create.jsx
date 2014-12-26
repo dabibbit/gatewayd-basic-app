@@ -21,7 +21,7 @@ var PaymentCreate = React.createClass({
     unprocessed_address: 'string',
     amount: 'number',
     currency: 'string',
-    destination_tag: 'number',
+    destinationTag: 'number',
     source_tag: 'number',
     invoice_id: 'string',
     unprocessed_memos: 'string'
@@ -171,7 +171,7 @@ var PaymentCreate = React.createClass({
       unprocessed_address: {},
       amount: {},
       currency: {},
-      destination_tag: {},
+      destinationTag: {},
       source_tag: {},
       invoice_id: {},
       unprocessed_memos: {},
@@ -252,13 +252,13 @@ var PaymentCreate = React.createClass({
             </Row>
             <Row>
               <Col xs={6}>
-                <Input type="tel" ref="destination_tag"
+                <Input type="tel" ref="destinationTag"
                   label="Destination Tag:"
-                  bsStyle={this.validationMap[this.state.destination_tag.inputState]}
-                  disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'destination_tag')}
+                  bsStyle={this.validationMap[this.state.destinationTag.inputState]}
+                  disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'destinationTag')}
                   hasFeedback
                 />
-                {errorMessageLabel(this.state.destination_tag.errorMessage)}
+                {errorMessageLabel(this.state.destinationTag.errorMessage)}
               </Col>
               <Col xs={6}>
                 <Input type="tel" ref="source_tag"
