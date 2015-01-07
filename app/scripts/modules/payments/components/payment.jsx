@@ -44,12 +44,12 @@ var Payment = React.createClass({
   },
 
   componentDidMount: function() {
-    this.props.model.on('retryStart', this.showSpinningIcon);
-    this.props.model.on('retryStop', this.hideSpinningIcon);
+    this.props.model.on('pollingStart', this.showSpinningIcon);
+    this.props.model.on('pollingStop', this.hideSpinningIcon);
   },
 
   componentWillUnmount: function() {
-    this.props.model.off('retryStart retryStop');
+    this.props.model.off('pollingStart pollingStop');
   },
 
   render: function() {

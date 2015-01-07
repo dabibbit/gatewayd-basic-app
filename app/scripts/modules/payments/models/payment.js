@@ -13,6 +13,9 @@ var session = require('../../../modules/session/models/session');
 
 var pollingHeart = new heartbeats.Heart(5000);
 
+// TODO - figure out a way to make the spinner, that this heart is used for, independent
+var instantHeart = new heartbeats.Heart(100);
+
 Backbone.$ = $;
 
 var Payment = Backbone.Model.extend({
@@ -92,7 +95,7 @@ var Payment = Backbone.Model.extend({
   checkPollCompletion: function(model) {
     if (model.get('state') === 'succeeded' || model.get('state') === 'failed') {
       pollingHeart.clearEvents();
-      this.trigger('retryStop');
+      this.trigger('pollingStop');
     }
   },
 
@@ -111,14 +114,18 @@ var Payment = Backbone.Model.extend({
   pollStatus: function() {
     var _this = this;
 
+    // trigger polling events as soon as possible before polling starts
+    instantHeart.onceOnBeat(1, function() {
+      _this.trigger('pollingStart');
+    });
+
     // update displayed payment information every interval to watch status changes
     pollingHeart.onBeat(1, this.pollStatusHelper);
-    pollingHeart.onceOnBeat(0, this.trigger('retryStart'));
 
     // stop polling after 10 intervals
     pollingHeart.onceOnBeat(10, function() {
       pollingHeart.clearEvents();
-      _this.trigger('retryStop');
+      _this.trigger('pollingStop');
     });
   },
 
