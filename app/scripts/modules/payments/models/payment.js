@@ -1,5 +1,6 @@
 "use strict";
 
+var config = require('../../../shared/app-config');
 var _ = require('lodash');
 var $ = require('jquery');
 var heartbeats = require('heartbeats');
@@ -11,7 +12,7 @@ var adminDispatcher = require('../../../dispatchers/admin-dispatcher');
 var paymentConfigActions = require('../config.json').actions;
 var session = require('../../../modules/session/models/session');
 
-var pollingHeart = new heartbeats.Heart(5000);
+var pollingHeart = new heartbeats.Heart(config.pollingRate);
 
 // TODO - figure out a way to make the spinner, that this heart is used for, independent
 var instantHeart = new heartbeats.Heart(100);
@@ -122,8 +123,8 @@ var Payment = Backbone.Model.extend({
     // update displayed payment information every interval to watch status changes
     pollingHeart.onBeat(1, this.pollStatusHelper);
 
-    // stop polling after 10 intervals
-    pollingHeart.onceOnBeat(10, function() {
+    // stop polling after X intervals, depending on config
+    pollingHeart.onceOnBeat(config.maxPollCount, function() {
       pollingHeart.clearEvents();
       _this.trigger('pollingStop');
     });
