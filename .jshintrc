@@ -11,7 +11,8 @@
     "couch"         : false,
 
     "predef"        : [
-        "require"
+        "require",
+        "process"
     ],
 
 
