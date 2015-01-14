@@ -43,28 +43,28 @@ var Payment = Backbone.Model.extend({
 
   validationRules: {
     to_address_id: {
-      validators: ['isRequired', 'isNumber'] // int
+      validators: ['isNumber'] // int
     },
     from_address_id: {
-      validators: ['isRequired', 'isNumber'] // int
+      validators: ['isNumber'] // int
     },
     to_amount: {
-      validators: ['isRequired', 'isNumber'] // decimal
+      validators: ['isNumber'] // decimal
     },
     to_currency: {
-      validators: ['isRequired', 'isString', 'minLength:1']
+      validators: ['isString', 'minLength:1']
     },
     to_issuer: {
-      validators: ['isRequired', 'isString', 'minLength:1']
+      validators: ['isString', 'minLength:1']
     },
     from_amount: {
-      validators: ['isRequired', 'isNumber'] // decimal
+      validators: ['isNumber'] // decimal
     },
     from_currency: {
-      validators: ['isRequired', 'isString', 'minLength:1']
+      validators: ['isString', 'minLength:1']
     },
     from_issuer: {
-      validators: ['isRequired', 'isString', 'minLength:1']
+      validators: ['isString', 'minLength:1']
     }
   },
 
