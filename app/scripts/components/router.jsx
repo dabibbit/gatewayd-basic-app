@@ -144,7 +144,7 @@ var routes = (
     <Route name="payments" path="payments/:direction/:state" handler={PaymentsModule}/>
     <Route name="notFound" handler={NotFound} />
     <NotFoundRoute handler={NotFound} />
-    <Redirect from="/" to={loginPath} />
+    <Redirect from="/" to="/payments/outgoing/all" />
   </Route>
 );
 
