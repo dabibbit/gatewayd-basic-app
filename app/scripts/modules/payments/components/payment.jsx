@@ -1,5 +1,6 @@
 "use strict";
 
+var _ = require('lodash');
 var moment = require('moment');
 var React = require('react');
 var ModalTrigger = require('react-bootstrap').ModalTrigger;
@@ -60,14 +61,26 @@ var Payment = React.createClass({
 
     // display 'From Address' for received payments or 'To Address' for sent payments
     if (this.props.model.get('direction') === 'from-ripple') {
-      fromAddress = (<Address
-        direction="from"
-        address={this.props.model.get('fromAddress').address} />);
-        toAddress = <p>&nbsp;</p>;
+      fromAddress = (
+        <Address
+          direction="from"
+          address={
+            _.isEmpty(this.props.model.get('fromAddress')) ?
+            'none' : this.props.model.get('fromAddress').address
+          }
+        />
+      );
+      toAddress = <p>&nbsp;</p>;
     } else {
-      toAddress = (<Address
-        direction="to"
-        address={this.props.model.get('toAddress').address} />);
+      toAddress = (
+        <Address
+          direction="to"
+          address={
+            _.isEmpty(this.props.model.get('toAddress')) ?
+              'none' : this.props.model.get('toAddress').address
+          }
+        />
+      );
       fromAddress = <p>&nbsp;</p>;
     }
 

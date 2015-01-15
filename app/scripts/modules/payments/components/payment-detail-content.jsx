@@ -31,7 +31,10 @@ var PaymentDetailContent = React.createClass({
               <div className="col-sm-12">
                 <Address
                   direction="from"
-                  address={this.props.model.get('fromAddress').address}
+                  address={
+                    _.isEmpty(this.props.model.get('fromAddress')) ?
+                      'none' : this.props.model.get('fromAddress').address
+                  }
                 />
               </div>
             </div>
@@ -59,7 +62,10 @@ var PaymentDetailContent = React.createClass({
               <div className="col-sm-12">
                 <Address
                   direction="to"
-                  address={this.props.model.get('toAddress').address}
+                  address={
+                    _.isEmpty(this.props.model.get('toAddress')) ?
+                      'none' : this.props.model.get('toAddress').address
+                  }
                 />
               </div>
             </div>
