@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var CryptoJS = require('crypto-js');
+var secrets = require('../../../../../secrets.json');
 
 var Backbone = require('backbone');
 var ValidationMixins = require('../../../shared/helpers/validation_mixin');
@@ -16,9 +17,9 @@ Backbone.$ = $;
 
 var Session = Backbone.Model.extend({
   defaults: {
-    gatewaydUrl: '',
-    sessionKey: '',
-    lastLogin: 0,
+    gatewaydUrl: secrets.url,
+    sessionKey: secrets.key,
+    lastLogin: 1,
     credentials: 'ABC' // Base64
   },
 

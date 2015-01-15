@@ -15,7 +15,7 @@ var User = Backbone.Model.extend({
   defaults: {
     name: 'guest@example.com',
     role: 'guest',
-    isLoggedIn: false
+    isLoggedIn: true
   },
 
   validationRules: {
