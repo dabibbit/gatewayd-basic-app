@@ -20,6 +20,7 @@ var Session = Backbone.Model.extend({
     gatewaydUrl: secrets.url,
     sessionKey: secrets.key,
     lastLogin: 1,
+    name: 'test',
     credentials: 'ABC' // Base64
   },
 
@@ -38,6 +39,7 @@ var Session = Backbone.Model.extend({
   initialize: function() {
     _.bindAll(this);
 
+    this.createCredentials(this.get('name'), this.get('sessionKey'));
     this.set('userModel', new UserModel());
 
     adminDispatcher.register(this.dispatchCallback);
