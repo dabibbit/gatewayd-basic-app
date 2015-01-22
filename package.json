@@ -53,6 +53,7 @@
     "minimist": "^1.1.0",
     "mocha": "1.21.4",
     "moment": "2.8.4",
+    "posix": "^1.0.4",
     "react": "0.12.1",
     "react-bootstrap": "0.13.0",
     "react-document-title": "0.1.3",
