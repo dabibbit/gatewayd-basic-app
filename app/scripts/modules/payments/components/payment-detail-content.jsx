@@ -8,7 +8,6 @@ var React = require('react');
 
 var PaymentDetailContent = React.createClass({
   propTypes: {
-    model: React.PropTypes.object,
     paymentDetailClassName: React.PropTypes.string
   },
 
@@ -16,11 +15,11 @@ var PaymentDetailContent = React.createClass({
     return (
       <div className={this.props.paymentDetailClassName}>
         <div className="row border-bottom">
-          Updated {moment(this.props.model.get('updatedAt')).format('MMM D, YYYY HH:mm z')}
+          Updated {moment(this.props.updatedAt).format('MMM D, YYYY HH:mm z')}
         </div>
         <br />
         <div className="row">
-          Transaction Id: {this.props.model.get('id')}
+          Transaction Id: {this.props.id}
         </div>
         <br />
         <div className="row">
@@ -31,10 +30,7 @@ var PaymentDetailContent = React.createClass({
               <div className="col-sm-12">
                 <Address
                   direction="from"
-                  address={
-                    _.isEmpty(this.props.model.get('fromAddress')) ?
-                      'none' : this.props.model.get('fromAddress').address
-                  }
+                  address={this.props.fromAddress.address}
                 />
               </div>
             </div>
@@ -43,7 +39,7 @@ var PaymentDetailContent = React.createClass({
                 Tag:
               </div>
               <div className="col-sm-9">
-                {this.props.model.get('fromAddress').tag || 'none'}
+                {this.props.fromAddress.tag || 'none'}
               </div>
             </div>
             <div className="row">
@@ -53,7 +49,7 @@ var PaymentDetailContent = React.createClass({
             </div>
             <div className="row">
               <div className="col-sm-9 col-sm-offset-3">
-                {this.props.model.get('from_amount')} {this.props.model.get('from_currency')}
+                {this.props.from_amount} {this.props.from_currency}
               </div>
             </div>
           </div>
@@ -62,10 +58,7 @@ var PaymentDetailContent = React.createClass({
               <div className="col-sm-12">
                 <Address
                   direction="to"
-                  address={
-                    _.isEmpty(this.props.model.get('toAddress')) ?
-                      'none' : this.props.model.get('toAddress').address
-                  }
+                  address={this.props.toAddress.address}
                 />
               </div>
             </div>
@@ -74,7 +67,7 @@ var PaymentDetailContent = React.createClass({
                 Tag:
               </div>
               <div className="col-sm-9">
-                {this.props.model.get('toAddress').tag || 'none'}
+                {this.props.toAddress.tag}
               </div>
             </div>
             <div className="row">
@@ -84,23 +77,23 @@ var PaymentDetailContent = React.createClass({
             </div>
             <div className="row">
               <div className="col-sm-9 col-sm-offset-3">
-                +{this.props.model.get('to_amount')} {this.props.model.get('to_currency')}
+                +{this.props.to_amount} {this.props.to_currency}
               </div>
             </div>
           </div>
         </div>
         <br />
         <div className="row">
-          Invoice Id: {this.props.model.get('invoice_id') || 'none'}
+          Invoice Id: {this.props.invoice_id}
         </div>
         <br />
         <div className="row">
-          Transaction Hash: {this.props.model.get('transaction_hash') || 'none'}
+          Transaction Hash: {this.props.transaction_hash}
         </div>
         <br />
         <div className="row">
-          Memos: { !_.isEmpty(this.props.model.get('memos')) ?
-            this.props.model.get('memos')[0].MemoData : 'none'
+          Memos: { !_.isEmpty(this.props.memos) ?
+            this.props.memos[0].MemoData : 'none'
           }
         </div>
       </div>

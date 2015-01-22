@@ -97,11 +97,6 @@ var Payments = Backbone.Collection.extend({
   },
 
   fetchRippleTransactions: function() {
-    var _this = this;
-
-    // array of current transaction ids
-    var ids = _.pluck(this.models, 'id');
-
     this.fetch({
       headers: {
         Authorization: session.get('credentials')

@@ -11,8 +11,13 @@ var Chevron = require('../../../shared/components/glyphicon/chevron.jsx');
 
 var Payment = React.createClass({
   propTypes: {
-    model: React.PropTypes.object,
     retryButtonClickHandler: React.PropTypes.func
+  },
+
+  getDefaultProps: function() {
+    return {
+      isPolling: false
+    };
   },
 
   handleDetailIconClick: function(id) {
@@ -25,49 +30,26 @@ var Payment = React.createClass({
     this.props.retryButtonClickHandler(id);
   },
 
-  showSpinningIcon: function() {
-    this.setState({
-      refreshIconClasses: 'glyphicon glyphicon-refresh glyphicon-spin'
-    });
-  },
-
-  hideSpinningIcon: function() {
-    this.setState({
-      refreshIconClasses: ''
-    });
-  },
-
   getInitialState: function() {
     return {
-      refreshIconClasses: '',
       showDetails: false
     };
   },
 
-  componentDidMount: function() {
-    this.props.model.on('pollingStart', this.showSpinningIcon);
-    this.props.model.on('pollingStop', this.hideSpinningIcon);
-  },
-
-  componentWillUnmount: function() {
-    this.props.model.off('pollingStart pollingStop');
-  },
-
   render: function() {
-    var _this = this;
-    var doneButton, retryLink, refreshIcon, fromAddress, toAddress;
     var paymentItemClasses = 'modal-container';
-    var rippleGraphLink = 'http://www.ripplecharts.com/#/graph/' + this.props.model.get('transaction_hash');
+    var rippleGraphLink = 'http://www.ripplecharts.com/#/graph/' + this.props.transaction_hash;
+    var getRefreshIconClass = function(isPolling) {
+      return isPolling ? 'glyphicon glyphicon-refresh glyphicon-spin' : '';
+    };
+    var doneButton, retryLink, refreshIcon, fromAddress, toAddress;
 
     // display 'From Address' for received payments or 'To Address' for sent payments
-    if (this.props.model.get('direction') === 'from-ripple') {
+    if (this.props.direction === 'from-ripple') {
       fromAddress = (
         <Address
           direction="from"
-          address={
-            _.isEmpty(this.props.model.get('fromAddress')) ?
-            'none' : this.props.model.get('fromAddress').address
-          }
+          address={this.props.fromAddress.address}
         />
       );
       toAddress = <p>&nbsp;</p>;
@@ -75,16 +57,13 @@ var Payment = React.createClass({
       toAddress = (
         <Address
           direction="to"
-          address={
-            _.isEmpty(this.props.model.get('toAddress')) ?
-              'none' : this.props.model.get('toAddress').address
-          }
+          address={this.props.toAddress.address}
         />
       );
       fromAddress = <p>&nbsp;</p>;
     }
 
-    if (this.props.model.get('state') === 'incoming') {
+    if (this.props.state === 'incoming') {
       doneButton = (
         <ModalTrigger modal={<PaymentDetailModal model={this.props.model} />}>
           <button className="btn pull-right">
@@ -97,9 +76,9 @@ var Payment = React.createClass({
     }
 
     // show retry link for failed payments
-    if (this.props.model.get('state') === 'failed') {
+    if (this.props.state === 'failed') {
       retryLink=(
-        <a onClick={this.handleRetryButtonClick.bind(this,this.props.model.get('id'))}>
+        <a onClick={this.handleRetryButtonClick.bind(this,this.props.id)}>
           Retry?
         </a>
       );
@@ -113,29 +92,29 @@ var Payment = React.createClass({
           <div className="col-sm-4">
             <p>
               <span className="header">To Amount: </span>
-              <span className="data">{this.props.model.get('to_amount')} </span>
-              <span className="currency">{this.props.model.get('to_currency')}</span>
+              <span className="data">{this.props.to_amount} </span>
+              <span className="currency">{this.props.to_currency}</span>
             </p>
             {toAddress}
             <p>
               <span className="header">Destination Tag:</span>
             </p>
-            {this.props.model.get('toAddress').tag}
+            {this.props.toAddress.tag}
           </div>
           <div className="col-sm-4">
             <p>
               <span className="header">From Amount: </span>
-              <span className="data">{this.props.model.get('from_amount')} </span>
-              <span className="currency">{this.props.model.get('from_currency')}</span>
+              <span className="data">{this.props.from_amount} </span>
+              <span className="currency">{this.props.from_currency}</span>
             </p>
             {fromAddress}
           </div>
           <div className="col-sm-4 text-right">
             <p>
               <span className="header">Status: </span>
-              <span className="data">{this.props.model.get('state')} </span>
+              <span className="data">{this.props.state} </span>
               <span className="header">{retryLink} </span>
-              <span className={this.state.refreshIconClasses} />
+              <span className={getRefreshIconClass(this.props.isPolling)} />
             </p>
             {doneButton}
           </div>
@@ -153,16 +132,16 @@ var Payment = React.createClass({
         </div>
         <div className="clearfix">
           <span className="date pull-left">
-            {moment(this.props.model.get('createdAt')).format('MMM D, YYYY HH:mm z')}
+            {moment(this.props.createdAt).format('MMM D, YYYY HH:mm z')}
           </span>
           <Chevron
-            clickHandler={this.handleDetailIconClick.bind(this, this.props.model.get('id'))}
+            clickHandler={this.handleDetailIconClick.bind(this, this.props.id)}
             iconClasses="pull-right"
           />
         </div>
         <div>
           {this.state.showDetails ?
-            <PaymentDetailContent model={this.props.model} paymentDetailClassName={"details"}/>
+            <PaymentDetailContent {...this.props} paymentDetailClassName={"details"}/>
             : false}
         </div>
       </li>

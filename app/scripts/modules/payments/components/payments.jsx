@@ -26,25 +26,33 @@ var PaymentCreateFormModel = require('../models/payment-create.js');
 var paymentCreateFormModel = new PaymentCreateFormModel();
 var PaymentCreateForm = require('./payment-create.jsx');
 
-
 var Payments = React.createClass({
   mixins: [ActiveState, Router.State],
 
   getInitialState: function() {
-
-    // TODO - separate the backbone collection from the state and retrieve only its JSON representation
     return {
-      payments: collection
+      payments: []
     };
   },
 
   componentDidMount: function() {
     collection.on('sync', this.handleCollectionSync);
+    collection.on('polling', this.handlePolling);
+
     paymentActions.updateUrl(this.getPath());
   },
 
   componentWillUnmount: function() {
-    collection.off('sync');
+    collection.off('sync polling');
+  },
+
+  handlePolling: function(data) {
+    var payment =  _.find(this.state.payments, {id: data.id});
+
+    payment.isPolling = data.isPolling;
+
+    //todo: find more performant way to handle data
+    this.forceUpdate();
   },
 
   // @data payment collection or model
@@ -59,7 +67,7 @@ var Payments = React.createClass({
       return false;
     } else {
       this.setState({
-        payments: data
+        payments: data.toJSON()
       });
     }
   },
@@ -92,18 +100,34 @@ var Payments = React.createClass({
 
     // less than ideal, will refactor when we have pagination, if not sooner.
     // We could keep different collections for each type, but it depends on use case.
-    var paymentItems = this.state.payments.chain()
-      .filter(function(model) {
-        return model.get('direction') === _this.directionMap[direction];
+    var paymentItems = _.chain(this.state.payments)
+      .filter(function(payment) {
+        return payment.direction === _this.directionMap[direction];
       })
-      .filter(function(model) {
-        return state === 'all'? true : model.get('state') === state;
+      .filter(function(payment) {
+        return state === 'all' ? true : (payment.state === state);
       })
-      .map(function(model) {
+      .map(function(payment) {
+        var addressDefaults = {
+          address: 'none',
+          tag: '',
+          uid: null,
+          data: null
+        };
+
+        var defaults = {
+          invoice_id: 'none',
+          transaction_hash: 'none'
+        };
+
+        payment = _.defaults(defaults, payment);
+        payment.toAddress = _.defaults(addressDefaults, payment.toAddress);
+        payment.fromAddress = _.defaults(addressDefaults, payment.fromAddress);
+
         return (
           <PaymentItem
-            key={model.get('id')}
-            model={model}
+            key={payment.id}
+            {...payment}
             retryButtonClickHandler={this.handleRetryButtonClick}
           />
         );

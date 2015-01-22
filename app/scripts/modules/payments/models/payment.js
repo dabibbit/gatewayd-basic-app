@@ -94,9 +94,11 @@ var Payment = Backbone.Model.extend({
   },
 
   checkPollCompletion: function(model) {
+    var _this = this;
+
     if (model.get('state') === 'succeeded' || model.get('state') === 'failed') {
       pollingHeart.clearEvents();
-      this.trigger('pollingStop');
+      this.trigger('polling', {id: _this.id, isPolling: false});
     }
   },
 
@@ -117,7 +119,7 @@ var Payment = Backbone.Model.extend({
 
     // trigger polling events as soon as possible before polling starts
     instantHeart.onceOnBeat(1, function() {
-      _this.trigger('pollingStart');
+      _this.trigger('polling', {id: _this.id, isPolling: true});
     });
 
     // update displayed payment information every interval to watch status changes
@@ -126,7 +128,7 @@ var Payment = Backbone.Model.extend({
     // stop polling after X intervals, depending on config
     pollingHeart.onceOnBeat(config.maxPollCount, function() {
       pollingHeart.clearEvents();
-      _this.trigger('pollingStop');
+      _this.trigger('polling', {id: _this.id, isPolling: false});
     });
   },
 
