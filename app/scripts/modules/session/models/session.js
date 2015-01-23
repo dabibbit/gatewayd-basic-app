@@ -17,7 +17,7 @@ Backbone.$ = $;
 
 var Session = Backbone.Model.extend({
   defaults: {
-    gatewaydUrl: secrets.url,
+    gatewaydUrl: secrets.url || (location.origin + ':5000'),
     sessionKey: secrets.key,
     lastLogin: 1,
     name: 'test',
