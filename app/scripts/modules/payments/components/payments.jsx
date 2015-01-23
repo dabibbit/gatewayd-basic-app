@@ -36,14 +36,16 @@ var Payments = React.createClass({
   },
 
   componentDidMount: function() {
-    collection.on('sync', this.handleCollectionSync);
+    collection.on('sort', this.handleCollectionSync);
+
+    //this handles the model polling for 'retry'
     collection.on('polling', this.handlePolling);
 
     paymentActions.updateUrl(this.getPath());
   },
 
   componentWillUnmount: function() {
-    collection.off('sync polling');
+    collection.off('sort polling');
   },
 
   handlePolling: function(data) {
@@ -57,19 +59,9 @@ var Payments = React.createClass({
 
   // @data payment collection or model
   handleCollectionSync: function(data) {
-
-    // TODO - is there a better way to handle separation of collection vs model syncs?
-    if (data instanceof Backbone.Model) {
-
-      // changing a model in the collection/state won't trigger a re-render
-      this.forceUpdate();
-
-      return false;
-    } else {
-      this.setState({
-        payments: data.toJSON()
-      });
-    }
+    this.setState({
+      payments: data.toJSON()
+    });
   },
 
   handleRetryButtonClick: function(id) {

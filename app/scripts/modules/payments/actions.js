@@ -69,6 +69,12 @@ var actions = {
     });
   },
 
+  fetchNewRippleTransactions: function() {
+    adminDispatcher.handleEvent({
+      actionType: paymentActions.fetchNewRippleTransactions
+    });
+  },
+
   fetchRippleTransactions: function() {
     adminDispatcher.handleEvent({
       actionType: paymentActions.fetchRippleTransactions

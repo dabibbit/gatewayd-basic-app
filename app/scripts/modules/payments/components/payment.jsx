@@ -37,7 +37,6 @@ var Payment = React.createClass({
   },
 
   render: function() {
-    var paymentItemClasses = 'modal-container';
     var rippleGraphLink = 'http://www.ripplecharts.com/#/graph/' + this.props.transaction_hash;
     var getRefreshIconClass = function(isPolling) {
       return isPolling ? 'glyphicon glyphicon-refresh glyphicon-spin' : '';
@@ -87,7 +86,7 @@ var Payment = React.createClass({
     }
 
     return (
-      <li className={"payment-item list-group-item " + paymentItemClasses} ref="container">
+      <li className="payment-item list-group-item animated fade-in modal-container" ref="container">
         <div className="row">
           <div className="col-sm-4">
             <p>

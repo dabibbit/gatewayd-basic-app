@@ -9,6 +9,7 @@
     "validateAddress": "validateAddress",
     "sendPaymentAttempt": "sendPaymentAttempt",
     "sendPaymentComplete": "sendPaymentComplete",
+    "fetchNewRippleTransactions": "fetchNewRippleTransactions",
     "fetchRippleTransactions": "fetchRippleTransactions"
   }
 }

@@ -25,7 +25,7 @@ var pollingHeart = new heartbeats.Heart(1000);
 
 var pollWhenActive = function() {
   if (sessionModel.isLoggedIn()) {
-    paymentActions.fetchRippleTransactions();
+    paymentActions.fetchNewRippleTransactions();
   }
 };
 

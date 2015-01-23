@@ -186,8 +186,57 @@ body {
   }
 }
 
+//animations
+
+.animated {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation-name: fade-in;
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -100%, 0);
+    transform: translate3d(0, -100%, 0);
+  }
+
+  100% {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+
+.fadeInDown {
+  animation-name: fadeInDown;
+}
+
 //payment
 .payment-item {
+
+  .not-initial-load & {
+    opacity: 0;
+    transition: opacity 1.0s ease-in;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
   .header {
     font-weight: 500;
     text-transform: capitalize;

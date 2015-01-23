@@ -25,13 +25,6 @@ var Payments = Backbone.Collection.extend({
   },
 
   dispatcherCallback: function(payload) {
-    var handleAction = {};
-
-    handleAction[paymentConfigActions.updateUrl] = this.updateUrl;
-    handleAction[paymentConfigActions.flagAsDone] = this.flagAsDone;
-    handleAction[paymentConfigActions.fetchRippleTransactions] = this.fetchRippleTransactions;
-    handleAction[paymentConfigActions.sendPaymentComplete] = this.sendPaymentComplete;
-
     if (!_.isUndefined(this[payload.actionType])) {
       this[payload.actionType](payload.data);
     }
@@ -75,7 +68,8 @@ var Payments = Backbone.Collection.extend({
       return false;
     }
 
-    this.url = session.get('gatewaydUrl') + this.urlObject[page].path;
+    //todo create url factory to handle query strings
+    this.url = session.get('gatewaydUrl') + this.urlObject[page].path + '?count=200';
     this.httpMethod = this.urlObject[page].method;
 
     this.fetchRippleTransactions();
@@ -100,6 +94,33 @@ var Payments = Backbone.Collection.extend({
     this.fetch({
       headers: {
         Authorization: session.get('credentials')
+      }
+    });
+  },
+
+  getNewTransactionsUrl: function(id) {
+    return this.url + '&sort_direction=asc' + '&index=' + id;
+  },
+
+  fetchNewRippleTransactions: function() {
+
+    //if collection is empty, do a normal fetch
+    if (!this.at(0)) {
+      this.fetchRippleTransactions();
+      return false;
+    }
+
+    var _this = this,
+        url = this.getNewTransactionsUrl(this.at(0).get('id'));
+
+    this.fetch({
+      url: url,
+      remove: false,
+      headers: {
+        Authorization: session.get('credentials')
+      },
+      success: function(coll, r) {
+        _this.trigger("addedNew", {test: true});
       }
     });
   },
