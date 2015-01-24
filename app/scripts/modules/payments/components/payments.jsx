@@ -36,10 +36,11 @@ var Payments = React.createClass({
   },
 
   componentDidMount: function() {
-    collection.on('sort', this.handleCollectionSync);
+    collection.on('fetchedTransactions', this.handleCollectionSync);
 
     //this handles the model polling for 'retry'
     collection.on('polling', this.handlePolling);
+    collection.on('refreshedTransactions', this.handleCollectionSync);
 
     paymentActions.updateUrl(this.getPath());
   },

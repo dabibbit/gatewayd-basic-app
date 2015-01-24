@@ -7,6 +7,7 @@ var adminDispatcher = require('../../../dispatchers/admin-dispatcher');
 var paymentConfigActions = require('../config.json').actions;
 var session = require('../../../modules/session/models/session');
 var Model = require('../models/payment.js');
+var moment = require('moment');
 
 Backbone.$ = $;
 
@@ -91,15 +92,22 @@ var Payments = Backbone.Collection.extend({
   },
 
   fetchRippleTransactions: function() {
+    var _this = this;
+
     this.fetch({
       headers: {
         Authorization: session.get('credentials')
+      },
+      success: function(coll, r) {
+        _this.trigger("fetchedTransactions", coll);
       }
     });
   },
 
-  getNewTransactionsUrl: function(id) {
-    return this.url + '&sort_direction=asc' + '&index=' + id;
+  getNewTransactionsUrl: function(updatedAt) {
+    var timeStamp = encodeURIComponent(moment(updatedAt).format('YYYY-MM-DD HH:mm:ss.ms'));
+
+    return this.url + '&sort_direction=asc' + '&index=' + timeStamp;
   },
 
   fetchNewRippleTransactions: function() {
@@ -111,7 +119,7 @@ var Payments = Backbone.Collection.extend({
     }
 
     var _this = this,
-        url = this.getNewTransactionsUrl(this.at(0).get('id'));
+        url = this.getNewTransactionsUrl(this.at(0).get('updatedAt'));
 
     this.fetch({
       url: url,
@@ -120,8 +128,13 @@ var Payments = Backbone.Collection.extend({
         Authorization: session.get('credentials')
       },
       success: function(coll, r) {
-        _this.trigger("addedNew", {test: true});
+        _this.trigger("refreshedTransactions", coll);
       }
+    }).then(function(models) {
+
+      //todo: find out why we need this!!
+      //this is a hack!!!
+      _this.set(models.rippleTransactions);
     });
   },
 

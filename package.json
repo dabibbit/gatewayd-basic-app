@@ -67,5 +67,8 @@
     "sinon-chai": "2.6.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "1.0.0"
+  },
+  "devDependencies": {
+    "moment": "https://registry.npmjs.org/moment/-/moment-2.8.4.tgz"
   }
 }
