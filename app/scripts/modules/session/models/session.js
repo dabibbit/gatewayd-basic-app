@@ -63,7 +63,8 @@ var Session = Backbone.Model.extend({
   },
 
   createCredentials: function(name, sessionKey) {
-    var encodedString = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(name + ':' + sessionKey));
+    var encodedString = CryptoJS.enc.Base64.stringify(
+      CryptoJS.enc.Utf8.parse(encodeURIComponent(name) + ':' + sessionKey));
 
     this.set('credentials', 'Basic ' + encodedString);
   },
