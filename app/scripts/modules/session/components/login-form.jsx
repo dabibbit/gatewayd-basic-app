@@ -17,12 +17,12 @@ var LoginForm = React.createClass({
   mixins: [Navigation],
 
   propTypes: {
-    defaultRoute: React.PropTypes.string
+    defaultPath: React.PropTypes.string
   },
 
   getDefaultProps: function() {
     return {
-      defaultRoute: '/'
+      defaultPath: '/'
     };
   },
 
@@ -74,7 +74,7 @@ var LoginForm = React.createClass({
     var _this = this;
 
     session.on('sync', function() {
-      _this.transitionTo(_this.props.defaultRoute);
+      _this.transitionTo(_this.props.defaultPath);
     });
 
     session.on('error', this.handleError);

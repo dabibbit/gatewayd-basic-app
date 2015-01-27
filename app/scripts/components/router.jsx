@@ -42,16 +42,16 @@ window.onblur = function() {
 
 var App = require('./app.jsx');
 
-var loginRoute = '/login';
-var logoutRoute = '/logout';
-var defaultRoute = '/payments/outgoing/all';
+var loginPath = '/login';
+var logoutPath = '/logout';
+var defaultPath = '/payments/outgoing/all';
 
 var AppModule = React.createClass({
   render: function() {
     return (
       <App
-        loginRoute={loginRoute}
-        defaultRoute={defaultRoute}
+        loginPath={loginPath}
+        defaultPath={defaultPath}
         isLoggedIn={sessionModel.isLoggedIn()}
         userName={sessionModel.get('userModel').get('name')}
       />
@@ -64,9 +64,9 @@ var SessionComponentModule = React.createClass({
     return (
       <
         SessionComponent
-          loginRoute={loginRoute}
-          logoutRoute={logoutRoute}
-          defaultRoute={defaultRoute}
+          loginPath={loginPath}
+          logoutPath={logoutPath}
+          defaultPath={defaultPath}
       />
     );
   }
@@ -88,7 +88,7 @@ var routes = (
     <Route name="payments" path="payments/:direction/:state" handler={PaymentsModule}/>
     <Route name="notFound" handler={NotFound} />
     <NotFoundRoute handler={NotFound} />
-    <Redirect from="/" to={loginRoute} />
+    <Redirect from="/" to={loginPath} />
   </Route>
 );
 

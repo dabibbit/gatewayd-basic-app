@@ -15,25 +15,25 @@ var Session = React.createClass({
   mixins: [Router.State, Navigation],
 
   propTypes: {
-    loginRoute: React.PropTypes.string,
-    logoutRoute: React.PropTypes.string,
-    defaultRoute: React.PropTypes.string
+    loginPath: React.PropTypes.string,
+    logoutPath: React.PropTypes.string,
+    defaultPath: React.PropTypes.string
   },
 
   getDefaultProps: function() {
     return {
-      loginRoute: '/',
-      logoutRoute: '/',
-      defaultRoute: '/'
+      loginPath: '/',
+      logoutPath: '/',
+      defaultPath: '/'
     };
   },
 
   redirectToLogin: function() {
-    this.transitionTo(this.props.loginRoute);
+    this.transitionTo(this.props.loginPath);
   },
 
   toLogin: function() {
-    return <LoginForm defaultRoute={this.props.defaultRoute} />;
+    return <LoginForm defaultPath={this.props.defaultPath} />;
   },
 
   toLogout: function() {
@@ -43,8 +43,8 @@ var Session = React.createClass({
   switchState: function(path) {
     var loginStateMap = {};
 
-    loginStateMap[this.props.loginRoute] = this.toLogin;
-    loginStateMap[this.props.logoutRoute] = this.toLogout;
+    loginStateMap[this.props.loginPath] = this.toLogin;
+    loginStateMap[this.props.logoutPath] = this.toLogout;
 
     if (!_.isUndefined(loginStateMap[path])) {
       return loginStateMap[path]();

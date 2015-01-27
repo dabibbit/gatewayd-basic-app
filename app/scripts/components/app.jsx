@@ -31,16 +31,16 @@ var App =
     propTypes: {
       isLoggedIn: React.PropTypes.bool,
       userName: React.PropTypes.string,
-      loginRoute: React.PropTypes.string,
-      defaultRoute: React.PropTypes.string
+      loginPath: React.PropTypes.string,
+      defaultPath: React.PropTypes.string
     },
 
     getDefaultProps: function() {
       return {
         isLoggedIn: false,
         userName: '',
-        loginRoute: '/',
-        defaultRoute: '/'
+        loginPath: '/',
+        defaultPath: '/'
       };
     },
 
@@ -64,9 +64,9 @@ var App =
 
         // redirect to login if session restoration failed
         if (!this.props.isLoggedIn) {
-          this.transitionTo(this.props.loginRoute);
+          this.transitionTo(this.props.loginPath);
         } else {
-          this.transitionTo(this.props.defaultRoute);
+          this.transitionTo(this.props.defaultPath);
         }
       }
 
