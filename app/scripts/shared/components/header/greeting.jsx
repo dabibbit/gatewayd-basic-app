@@ -3,26 +3,27 @@
 var _ = require('lodash');
 var React = require('react');
 var Link = require('react-router').Link;
-var session = require('../../../modules/session/models/session');
 
 var Greeting = React.createClass({
   propTypes: {
-    greetingClassName: React.PropTypes.string
+    greetingClassName: React.PropTypes.string,
+    isLoggedIn: React.PropTypes.bool,
+    userName: React.PropTypes.string
   },
 
   getDefaultProps: function() {
-    var defaults = {
-      greetingClassName: 'greeting-wrapper'
+    return {
+      greetingClassName: 'greeting-wrapper',
+      isLoggedIn: false,
+      userName: ''
     };
-
-    return  defaults;
   },
 
   handleLoggedIn: function() {
     return (
       <div className="greeting">
         <span className="welcome">
-          Welcome {session.get('userModel').get('name')}
+          Welcome {this.props.userName}
         </span>
         <Link to="/logout" className="link">
           Logout
@@ -51,7 +52,7 @@ var Greeting = React.createClass({
   render: function() {
     return (
       <div className={this.props.greetingClassName}>
-        {this.displayGreeting(session.isLoggedIn())}
+        {this.displayGreeting(this.props.isLoggedIn)}
       </div>
     );
   }

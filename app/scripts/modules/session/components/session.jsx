@@ -1,4 +1,4 @@
-"use strict;"
+"use strict";
 
 var _ = require('lodash');
 
@@ -14,12 +14,26 @@ var LoginForm = require('./login-form.jsx');
 var Session = React.createClass({
   mixins: [Router.State, Navigation],
 
+  propTypes: {
+    loginRoute: React.PropTypes.string,
+    logoutRoute: React.PropTypes.string,
+    defaultRoute: React.PropTypes.string
+  },
+
+  getDefaultProps: function() {
+    return {
+      loginRoute: '/',
+      logoutRoute: '/',
+      defaultRoute: '/'
+    };
+  },
+
   redirectToLogin: function() {
-    this.transitionTo('/login');
+    this.transitionTo(this.props.loginRoute);
   },
 
   toLogin: function() {
-    return <LoginForm />;
+    return <LoginForm defaultRoute={this.props.defaultRoute} />;
   },
 
   toLogout: function() {
@@ -27,10 +41,10 @@ var Session = React.createClass({
   },
 
   switchState: function(path) {
-    var loginStateMap = {
-      '/login': this.toLogin,
-      '/logout': this.toLogout
-    };
+    var loginStateMap = {};
+
+    loginStateMap[this.props.loginRoute] = this.toLogin;
+    loginStateMap[this.props.logoutRoute] = this.toLogout;
 
     if (!_.isUndefined(loginStateMap[path])) {
       return loginStateMap[path]();

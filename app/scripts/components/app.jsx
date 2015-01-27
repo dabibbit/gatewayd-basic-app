@@ -8,7 +8,6 @@ var Navigation = require('react-router').Navigation;
 var DocumentTitle = require('react-document-title');
 
 // session model and dispatch actions
-var session = require('../modules/session/models/session');
 var sessionActions = require('../modules/session/actions');
 
 // React components
@@ -29,12 +28,28 @@ var App =
   React.createClass({
     mixins: [Navigation],
 
+    propTypes: {
+      isLoggedIn: React.PropTypes.bool,
+      userName: React.PropTypes.string,
+      loginRoute: React.PropTypes.string,
+      defaultRoute: React.PropTypes.string
+    },
+
+    getDefaultProps: function() {
+      return {
+        isLoggedIn: false,
+        userName: '',
+        loginRoute: '/',
+        defaultRoute: '/'
+      };
+    },
+
     getInitialState: function() {
       return { showSidebar: false };
     },
 
     expandSidebar: function() {
-      if (session.isLoggedIn()) {
+      if (this.props.isLoggedIn) {
         this.setState({showSidebar: this.state.showSidebar ? false : true});
       } else {
         this.setState({showSidebar: false});
@@ -42,14 +57,16 @@ var App =
     },
 
     render:function(){
-      if (!session.isLoggedIn()) {
+      if (!this.props.isLoggedIn) {
 
         // attempt session restoration
         sessionActions.restore();
 
         // redirect to login if session restoration failed
-        if (!session.isLoggedIn()) {
-          this.transitionTo('/login');
+        if (!this.props.isLoggedIn) {
+          this.transitionTo(this.props.loginRoute);
+        } else {
+          this.transitionTo(this.props.defaultRoute);
         }
       }
 
@@ -60,6 +77,8 @@ var App =
             brandName={topBarConfig.brandName}
             wrapperClassName={topBarConfig.wrapperClassName}
             expandSidebar={this.expandSidebar}
+            userName={this.props.userName}
+            isLoggedIn={this.props.isLoggedIn}
           />
           {this.state.showSidebar ?
             <Sidebar sidebarClassName="sidebar sidebar-wallets">

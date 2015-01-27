@@ -15,7 +15,6 @@ var NotFound = require('./not-found/not-found.jsx');
 
 var sessionModel = require('../modules/session/models/session');
 var SessionComponent = require('../modules/session/components/session.jsx');
-var LoginForm = require('../modules/session/components/login-form.jsx');
 
 // continuously fetch ripple transactions when tab is active
 var Payments = require('../modules/payments/components/payments.jsx');
@@ -43,15 +42,53 @@ window.onblur = function() {
 
 var App = require('./app.jsx');
 
+var loginRoute = '/login';
+var logoutRoute = '/logout';
+var defaultRoute = '/payments/outgoing/all';
+
+var AppModule = React.createClass({
+  render: function() {
+    return (
+      <App
+        loginRoute={loginRoute}
+        defaultRoute={defaultRoute}
+        isLoggedIn={sessionModel.isLoggedIn()}
+        userName={sessionModel.get('userModel').get('name')}
+      />
+    );
+  }
+});
+
+var SessionComponentModule = React.createClass({
+  render: function() {
+    return (
+      <
+        SessionComponent
+          loginRoute={loginRoute}
+          logoutRoute={logoutRoute}
+          defaultRoute={defaultRoute}
+      />
+    );
+  }
+});
+
+var PaymentsModule = React.createClass({
+  render: function() {
+    return (
+      <Payments />
+    );
+  }
+});
+
 var routes = (
-  <Route name="app" path="/" handler={App}>
-    <DefaultRoute handler={SessionComponent} />
-    <Route name="login" handler={SessionComponent} />
-    <Route name="logout" handler={SessionComponent} />
-    <Route name="payments" path="payments/:direction/:state" handler={Payments}/>
+  <Route name="app" path="/" handler={AppModule}>
+    <DefaultRoute handler={SessionComponentModule} />
+    <Route name="login" handler={SessionComponentModule} />
+    <Route name="logout" handler={SessionComponentModule} />
+    <Route name="payments" path="payments/:direction/:state" handler={PaymentsModule}/>
     <Route name="notFound" handler={NotFound} />
     <NotFoundRoute handler={NotFound} />
-    <Redirect from="/" to="/login" />
+    <Redirect from="/" to={loginRoute} />
   </Route>
 );
 

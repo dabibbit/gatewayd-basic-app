@@ -16,6 +16,16 @@ var appConfig = require('../../../shared/app-config');
 var LoginForm = React.createClass({
   mixins: [Navigation],
 
+  propTypes: {
+    defaultRoute: React.PropTypes.string
+  },
+
+  getDefaultProps: function() {
+    return {
+      defaultRoute: '/'
+    };
+  },
+
   handleSubmit: function(e) {
     e.preventDefault();
 
@@ -64,7 +74,7 @@ var LoginForm = React.createClass({
     var _this = this;
 
     session.on('sync', function() {
-      _this.transitionTo('/payments/outgoing/all');
+      _this.transitionTo(_this.props.defaultRoute);
     });
 
     session.on('error', this.handleError);
