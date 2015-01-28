@@ -64,7 +64,7 @@ var Payment = React.createClass({
 
     if (this.props.state === 'incoming') {
       doneButton = (
-        <ModalTrigger modal={<PaymentDetailModal model={this.props.model} />}>
+        <ModalTrigger modal={<PaymentDetailModal {...this.props} />}>
           <button className="btn pull-right">
             Process
           </button>

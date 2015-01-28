@@ -14,7 +14,6 @@ var PaymentDetailContent = require('./payment-detail-content.jsx');
 
 var PaymentDetail = React.createClass({
   propTypes: {
-    model: React.PropTypes.object,
     onRequestHide: React.PropTypes.func
   },
 
@@ -23,7 +22,7 @@ var PaymentDetail = React.createClass({
   },
 
   handleProcessButtonClick: function() {
-    paymentActions.flagAsDone(this.props.model.get('id'));
+    paymentActions.flagAsDone(this.props.id);
   },
 
   render: function() {
@@ -34,7 +33,7 @@ var PaymentDetail = React.createClass({
         animation={false}
       >
         <div className="modal-body">
-          <PaymentDetailContent model={this.props.model} />
+          <PaymentDetailContent {...this.props} />
         </div>
         <div className="modal-footer">
           <div className="row">
