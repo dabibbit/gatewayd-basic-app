@@ -46,7 +46,7 @@ var Payments = React.createClass({
   },
 
   componentWillUnmount: function() {
-    collection.off('sort polling');
+    collection.off('fetchedTransactions refreshedTransactions polling');
   },
 
   handlePolling: function(data) {
