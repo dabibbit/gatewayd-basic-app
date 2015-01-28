@@ -12,9 +12,12 @@ var DefaultRoute = Router.DefaultRoute;
 var NotFoundRoute = Router.NotFoundRoute;
 var Redirect = Router.Redirect;
 var NotFound = require('./not-found/not-found.jsx');
+var Navigation = require('react-router').Navigation;
 
 var sessionModel = require('../modules/session/models/session');
 var SessionComponent = require('../modules/session/components/session.jsx');
+var isLoggedIn = false;
+var userName = '';
 
 // continuously fetch ripple transactions when tab is active
 var Payments = require('../modules/payments/components/payments.jsx');
@@ -23,7 +26,7 @@ var heartbeats = require('heartbeats');
 var pollingHeart = new heartbeats.Heart(1000);
 
 var pollWhenActive = function() {
-  if (sessionModel.isLoggedIn()) {
+  if (isLoggedIn) {
     paymentActions.fetchNewRippleTransactions();
   }
 };
@@ -47,13 +50,36 @@ var logoutPath = '/logout';
 var defaultPath = '/payments/outgoing/all';
 
 var AppModule = React.createClass({
+  mixins: [Navigation],
+
+  handleRestore: function(payload) {
+
+    // redirect to login if session restoration failed
+    if (payload.success) {
+      this.transitionTo(defaultPath);
+    } else {
+      this.transitionTo(loginPath);
+    }
+
+    isLoggedIn = payload.session.isLoggedIn();
+    userName = payload.session.get('userModel').get('name');
+  },
+
+  componentWillMount: function() {
+    sessionModel.on('attemptRestore', this.handleRestore);
+  },
+
+  componentWillUnmount: function() {
+    sessionModel.off('attemptRestore');
+  },
+
   render: function() {
     return (
       <App
         loginPath={loginPath}
         defaultPath={defaultPath}
-        isLoggedIn={sessionModel.isLoggedIn()}
-        userName={sessionModel.get('userModel').get('name')}
+        isLoggedIn={isLoggedIn}
+        userName={userName}
       />
     );
   }

@@ -4,10 +4,9 @@ var React = require('react');
 
 // React Router
 var RouteHandler = require('react-router').RouteHandler;
-var Navigation = require('react-router').Navigation;
 var DocumentTitle = require('react-document-title');
 
-// session model and dispatch actions
+// session dispatch actions
 var sessionActions = require('../modules/session/actions');
 
 // React components
@@ -26,8 +25,6 @@ var topBarConfig = {
 
 var App =
   React.createClass({
-    mixins: [Navigation],
-
     propTypes: {
       isLoggedIn: React.PropTypes.bool,
       userName: React.PropTypes.string,
@@ -61,13 +58,6 @@ var App =
 
         // attempt session restoration
         sessionActions.restore();
-
-        // redirect to login if session restoration failed
-        if (!this.props.isLoggedIn) {
-          this.transitionTo(this.props.loginPath);
-        } else {
-          this.transitionTo(this.props.defaultPath);
-        }
       }
 
       return (
