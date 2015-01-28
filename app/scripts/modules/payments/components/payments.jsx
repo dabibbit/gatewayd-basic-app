@@ -58,7 +58,6 @@ var Payments = React.createClass({
     this.forceUpdate();
   },
 
-  // @data payment collection or model
   handleCollectionSync: function(data) {
     this.setState({
       payments: data.toJSON()

@@ -128,13 +128,17 @@ var Payments = Backbone.Collection.extend({
         Authorization: session.get('credentials')
       },
       success: function(coll, r) {
+
+        //do nothing if nothing returned
+        if (!r.ripple_transactions.length) {
+          return false;
+        }
+
+        //todo: not sure why we need to set explicitly
+        //rather than letting bbone merge data
+        _this.set(r.ripple_transactions, {remove: false});
         _this.trigger("refreshedTransactions", coll);
       }
-    }).then(function(models) {
-
-      //todo: find out why we need this!!
-      //this is a hack!!!
-      _this.set(models.rippleTransactions);
     });
   },
 
