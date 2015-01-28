@@ -16,16 +16,6 @@ var appConfig = require('../../../shared/app-config');
 var LoginForm = React.createClass({
   mixins: [Navigation],
 
-  propTypes: {
-    defaultPath: React.PropTypes.string
-  },
-
-  getDefaultProps: function() {
-    return {
-      defaultPath: '/'
-    };
-  },
-
   handleSubmit: function(e) {
     e.preventDefault();
 
@@ -71,17 +61,11 @@ var LoginForm = React.createClass({
   },
 
   componentDidMount: function() {
-    var _this = this;
-
-    session.on('sync', function() {
-      _this.transitionTo(_this.props.defaultPath);
-    });
-
     session.on('error', this.handleError);
   },
 
   componentWillUnmout: function() {
-    session.off('sync error');
+    session.off('error');
   },
 
   render: function() {

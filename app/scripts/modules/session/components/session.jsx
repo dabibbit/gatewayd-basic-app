@@ -16,24 +16,18 @@ var Session = React.createClass({
 
   propTypes: {
     loginPath: React.PropTypes.string,
-    logoutPath: React.PropTypes.string,
-    defaultPath: React.PropTypes.string
+    logoutPath: React.PropTypes.string
   },
 
   getDefaultProps: function() {
     return {
       loginPath: '/',
-      logoutPath: '/',
-      defaultPath: '/'
+      logoutPath: '/'
     };
   },
 
-  redirectToLogin: function() {
-    this.transitionTo(this.props.loginPath);
-  },
-
   toLogin: function() {
-    return <LoginForm defaultPath={this.props.defaultPath} />;
+    return <LoginForm />;
   },
 
   toLogout: function() {
@@ -51,14 +45,6 @@ var Session = React.createClass({
     } else {
       return false;
     }
-  },
-
-  componentWillMount: function() {
-    session.on('logout', this.redirectToLogin, this);
-  },
-
-  componentWillUnmount: function() {
-    session.off('logout');
   },
 
   render: function() {

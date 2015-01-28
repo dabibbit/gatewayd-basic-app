@@ -52,6 +52,14 @@ var defaultPath = '/payments/outgoing/all';
 var AppModule = React.createClass({
   mixins: [Navigation],
 
+  getLogStatus: function(sessionModel) {
+    return sessionModel.isLoggedIn();
+  },
+
+  getUserName: function(sessionModel) {
+    return sessionModel.get('userModel').get('name');
+  },
+
   handleRestore: function(payload) {
 
     // redirect to login if session restoration failed
@@ -61,16 +69,37 @@ var AppModule = React.createClass({
       this.transitionTo(loginPath);
     }
 
-    isLoggedIn = payload.session.isLoggedIn();
-    userName = payload.session.get('userModel').get('name');
+    // occurs before component mounts, so this cannot be set to state
+    isLoggedIn = this.getLogStatus(payload.session);
+    userName = this.getUserName(payload.session);
+  },
+
+  handleLogin: function(sessionModel) {
+    this.transitionTo(defaultPath);
+
+    isLoggedIn = this.getLogStatus(sessionModel);
+    userName = this.getUserName(sessionModel);
+  },
+
+  handleLogout: function(payload) {
+    this.transitionTo(loginPath);
+
+    isLoggedIn = this.getLogStatus(payload.session);
   },
 
   componentWillMount: function() {
     sessionModel.on('attemptRestore', this.handleRestore);
   },
 
+  componentDidMount: function() {
+    sessionModel.on('sync', this.handleLogin);
+    sessionModel.on('logout', this.handleLogout);
+
+    this.forceUpdate();
+  },
+
   componentWillUnmount: function() {
-    sessionModel.off('attemptRestore');
+    sessionModel.off('attemptRestore sync logout');
   },
 
   render: function() {

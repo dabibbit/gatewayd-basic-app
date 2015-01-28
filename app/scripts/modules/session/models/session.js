@@ -129,7 +129,7 @@ var Session = Backbone.Model.extend({
     this.set(this.defaults);
 
     sessionStorage.clear();
-    this.trigger('logout');
+    this.trigger('logout', {session: this});
   },
 
   isLoggedIn: function() {
