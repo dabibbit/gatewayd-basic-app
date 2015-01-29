@@ -84,6 +84,10 @@ var Payments = React.createClass({
     return titleMap[direction];
   },
 
+  setDefaults: function(a, b) {
+    return (_.isNull(a) || _.isUndefined(a)) ? b : a;
+  },
+
   render: function() {
     var _this = this,
         direction = this.getParams().direction,
@@ -102,7 +106,7 @@ var Payments = React.createClass({
       .map(function(payment) {
         var addressDefaults = {
           address: 'none',
-          tag: '',
+          tag: 'none',
           uid: null,
           data: null
         };
@@ -112,9 +116,9 @@ var Payments = React.createClass({
           transaction_hash: 'none'
         };
 
-        payment = _.defaults(payment, defaults);
-        payment.toAddress = _.defaults(payment.toAddress, addressDefaults);
-        payment.fromAddress = _.defaults(payment.fromAddress, addressDefaults);
+        payment = _.merge(payment, defaults, this.setDefaults);
+        payment.toAddress = _.merge((payment.toAddress || {}), addressDefaults, this.setDefaults);
+        payment.fromAddress = _.merge((payment.fromAddress || {}), addressDefaults, this.setDefaults);
 
         return (
           <PaymentItem

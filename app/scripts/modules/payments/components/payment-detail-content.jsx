@@ -39,7 +39,7 @@ var PaymentDetailContent = React.createClass({
                 Tag:
               </div>
               <div className="col-sm-9">
-                {this.props.fromAddress.tag || 'none'}
+                {this.props.fromAddress.tag}
               </div>
             </div>
             <div className="row">
