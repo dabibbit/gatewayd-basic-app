@@ -112,9 +112,9 @@ var Payments = React.createClass({
           transaction_hash: 'none'
         };
 
-        payment = _.defaults(defaults, payment);
-        payment.toAddress = _.defaults(addressDefaults, payment.toAddress);
-        payment.fromAddress = _.defaults(addressDefaults, payment.fromAddress);
+        payment = _.defaults(payment, defaults);
+        payment.toAddress = _.defaults(payment.toAddress, addressDefaults);
+        payment.fromAddress = _.defaults(payment.fromAddress, addressDefaults);
 
         return (
           <PaymentItem
