@@ -18,7 +18,7 @@ var Navigation = require('react-router').Navigation;
 
 var sessionModel = require('../modules/session/models/session');
 var SessionComponent = require('../modules/session/components/session.jsx');
-var isLoggedIn = false;
+var isLoggedIn = true;
 var userName = '';
 
 // continuously fetch ripple transactions when tab is active
