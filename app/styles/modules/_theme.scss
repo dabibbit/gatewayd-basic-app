@@ -246,10 +246,11 @@ body {
     font-weight: 300;
   }
 
-  .address {
+  .truncate {
     @include ellipsis;
     font-weight: 300;
     vertical-align: middle;
+    width: 300px;
 
     .header {
       cursor: pointer;

@@ -5,7 +5,7 @@ var moment = require('moment');
 var React = require('react');
 var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var PaymentDetailModal = require('./payment-detail-modal.jsx');
-var Address = require('./address.jsx');
+var ResizeSpan = require('./resize-span.jsx');
 var PaymentDetailContent = require('./payment-detail-content.jsx');
 var Chevron = require('../../../shared/components/glyphicon/chevron.jsx');
 
@@ -46,17 +46,17 @@ var Payment = React.createClass({
     // display 'From Address' for received payments or 'To Address' for sent payments
     if (this.props.direction === 'from-ripple') {
       fromAddress = (
-        <Address
-          direction="from"
-          address={this.props.fromAddress.address}
+        <ResizeSpan
+          header="From Address"
+          data={this.props.fromAddress.address}
         />
       );
       toAddress = <p>&nbsp;</p>;
     } else {
       toAddress = (
-        <Address
-          direction="to"
-          address={this.props.toAddress.address}
+        <ResizeSpan
+          header="To Address"
+          data={this.props.toAddress.address}
         />
       );
       fromAddress = <p>&nbsp;</p>;
@@ -96,9 +96,9 @@ var Payment = React.createClass({
             </p>
             {toAddress}
             <p>
-              <span className="header">Destination Tag:</span>
+              <span className="header">Destination Tag: </span>
+              <span className="data">{this.props.toAddress.tag}</span>
             </p>
-            {this.props.toAddress.tag}
           </div>
           <div className="col-sm-4">
             <p>

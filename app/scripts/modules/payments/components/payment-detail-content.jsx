@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 var moment = require('moment');
-var Address = require('./address.jsx');
+var ResizeSpan = require('./resize-span.jsx');
 
 var React = require('react');
 
@@ -28,73 +28,84 @@ var PaymentDetailContent = React.createClass({
           <div className="col-sm-5 border-bottom">
             <div className="row">
               <div className="col-sm-12">
-                <Address
-                  direction="from"
-                  address={this.props.fromAddress.address}
+                <ResizeSpan
+                  header="From Address"
+                  data={this.props.fromAddress.address}
                 />
               </div>
             </div>
             <div className="row">
               <div className="col-sm-3">
-                Tag:
+                <span className="header">Tag:</span>
               </div>
               <div className="col-sm-9">
-                {this.props.fromAddress.tag}
+                <span className="data">{this.props.fromAddress.tag}</span>
               </div>
             </div>
             <div className="row">
               <div className="col-sm-12">
-                Balance Changes:
+                <span className="header">Balance Changes:</span>
               </div>
             </div>
             <div className="row">
               <div className="col-sm-9 col-sm-offset-3">
-                {this.props.from_amount} {this.props.from_currency}
+                <span className="data">{this.props.from_amount} </span>
+                <span className="currency">{this.props.from_currency}</span>
               </div>
             </div>
           </div>
           <div className="col-sm-6 col-sm-offset-1 border-bottom">
             <div className="row">
               <div className="col-sm-12">
-                <Address
-                  direction="to"
-                  address={this.props.toAddress.address}
+                <ResizeSpan
+                  header="To Address"
+                  data={this.props.toAddress.address}
                 />
               </div>
             </div>
             <div className="row">
               <div className="col-sm-3">
-                Tag:
+                <span className="header">Tag:</span>
               </div>
               <div className="col-sm-9">
-                {this.props.toAddress.tag}
+                <span className="data">{this.props.toAddress.tag}</span>
               </div>
             </div>
             <div className="row">
               <div className="col-sm-12">
-                Balance Changes:
+                <span className="header">Balance Changes:</span>
               </div>
             </div>
             <div className="row">
               <div className="col-sm-9 col-sm-offset-3">
-                +{this.props.to_amount} {this.props.to_currency}
+                <span className="data">+{this.props.to_amount} </span>
+                <span className="currency">{this.props.to_currency}</span>
               </div>
             </div>
           </div>
         </div>
         <br />
         <div className="row">
-          Invoice Id: {this.props.invoice_id}
+          <ResizeSpan
+            header="Invoice Id"
+            data={this.props.invoice_id}
+          />
         </div>
         <br />
         <div className="row">
-          Transaction Hash: {this.props.transaction_hash}
+          <ResizeSpan
+            header="Transaction Hash"
+            data={this.props.transaction_hash}
+          />
         </div>
         <br />
         <div className="row">
-          Memos: { !_.isEmpty(this.props.memos) ?
-            this.props.memos[0].MemoData : 'none'
-          }
+          <span className="header">Memos: </span>
+          <span className="data">
+            { !_.isEmpty(this.props.memos) ?
+              this.props.memos[0].MemoData : 'none'
+            }
+          </span>
         </div>
       </div>
     );
