@@ -104,22 +104,46 @@ var Payments = Backbone.Collection.extend({
     });
   },
 
-  getNewTransactionsUrl: function(updatedAt) {
-    var timeStamp = encodeURIComponent(moment(updatedAt).format('YYYY-MM-DD HH:mm:ss.ms'));
+  setLatestPayment: function(payments) {
+    var newestUpdatedPayment;
+
+    // todo: can't rely on response sorting at the moment
+    // look into timestamp issues later
+    if (payments.length) {
+      newestUpdatedPayment = _.max(payments, function(payment) {
+        return Date.parse(payment.updatedAt);
+      });
+
+      this.latestPayment = newestUpdatedPayment.updatedAt;
+    } else {
+      this.latestPayment = this.at(0).get('updatedAt');
+    }
+  },
+
+  getLatestPayment: function() {
+    return this.latestPayment || this.at(0).get('updatedAt');
+  },
+
+  getNewTransactionsUrl: function() {
+    var timeStamp = encodeURIComponent(moment(this.getLatestPayment())
+                                       .format('YYYY-MM-DD HH:mm:ss.SSS'));
 
     return this.url + '&sort_direction=asc' + '&index=' + timeStamp;
   },
 
   fetchNewRippleTransactions: function() {
 
+    var firstModel = this.at(0);
+
     //if collection is empty, do a normal fetch
-    if (!this.at(0)) {
+    //this is required since there is no first index from which to pull
+    if (!firstModel) {
       this.fetchRippleTransactions();
       return false;
     }
 
     var _this = this,
-        url = this.getNewTransactionsUrl(this.at(0).get('updatedAt'));
+        url = this.getNewTransactionsUrl();
 
     this.fetch({
       url: url,
@@ -138,6 +162,7 @@ var Payments = Backbone.Collection.extend({
         //rather than letting bbone merge data
         _this.set(r.ripple_transactions, {remove: false});
         _this.trigger("refreshedTransactions", coll);
+        _this.setLatestPayment(r.ripple_transactions);
       }
     });
   },
