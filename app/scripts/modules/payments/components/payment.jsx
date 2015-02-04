@@ -69,7 +69,9 @@ var Payment = React.createClass({
   },
 
   getDoneButton: function(state) {
-    if (state === 'incoming') {
+
+    //todo: this is a temp hack to hide the done button
+    if (state === 'thisShouldNeverShow') {
 
       //todo, roll our own modals
       //must pass stringLib back in here since the modal is not rendered
