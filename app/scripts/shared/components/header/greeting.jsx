@@ -1,10 +1,16 @@
 "use strict";
 
 var _ = require('lodash');
+var ReactIntl = require('react-intl');
+var IntlMixin = ReactIntl.IntlMixin;
+var FormattedMessage = ReactIntl.FormattedMessage;
 var React = require('react');
 var Link = require('react-router').Link;
 
 var Greeting = React.createClass({
+
+  mixins: [IntlMixin],
+
   propTypes: {
     greetingClassName: React.PropTypes.string,
     isLoggedIn: React.PropTypes.bool,
@@ -23,10 +29,13 @@ var Greeting = React.createClass({
     return (
       <div className="greeting">
         <span className="welcome">
-          Welcome {this.props.userName}
+          <FormattedMessage
+            name={this.props.userName}
+            message={this.getIntlMessage('topBarGreeting')}
+          />
         </span>
         <Link to="/logout" className="link">
-          Logout
+          <FormattedMessage message={this.getIntlMessage('topBarLogout')} />
         </Link>
       </div>
     );

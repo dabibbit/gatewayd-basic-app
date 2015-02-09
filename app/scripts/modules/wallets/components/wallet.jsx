@@ -1,22 +1,24 @@
 "use strict";
 
+var ReactIntl = require('react-intl');
+var IntlMixin = ReactIntl.IntlMixin;
+var FormattedMessage = ReactIntl.FormattedMessage;
 var React = require('react');
 var WalletEntry = require('./wallet-entry.jsx');
 
 var Wallet = React.createClass({
+  mixins: [IntlMixin],
+
   propTypes: {
-    type: React.PropTypes.string,
+    headerType: React.PropTypes.string,
     collection: React.PropTypes.object
   },
 
   render: function() {
-    var _this = this;
-    var titleMap = {
-      hot: 'Hot Wallet Balances',
-      cold: 'Cold Wallet Liabilities'
-    };
-    var buildBalanceEntries = function(balances) {
-      var balanceEntries = _this.props.collection.map(function(model) {
+    var buildBalanceEntries;
+
+    buildBalanceEntries = balances => {
+      return this.props.collection.map(model => {
         return (
           <WalletEntry
             key={model.cid}
@@ -26,21 +28,31 @@ var Wallet = React.createClass({
           />
         );
       });
-
-      return balanceEntries;
     };
 
     return (
       <div>
-        <h3>{titleMap[this.props.type]}</h3>
+        <h3>
+          <FormattedMessage
+            message={this.getIntlMessage(this.props.headerType)}
+          />
+        </h3>
         <ul className="wallet">
           <li className="list-group-item wallet-header">
             <div className="row">
               <div className="col-sm-3 col-xs-6">
-                <strong>Currency</strong>
+                <strong>
+                  <FormattedMessage
+                    message={this.getIntlMessage('walletCurrency')}
+                  />
+                </strong>
               </div>
               <div className="col-sm-3 col-xs-6 col-sm-offset-1">
-                <strong>Value</strong>
+                <strong>
+                  <FormattedMessage
+                    message={this.getIntlMessage('walletValue')}
+                  />
+                </strong>
               </div>
             </div>
           </li>

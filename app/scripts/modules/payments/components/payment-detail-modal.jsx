@@ -2,6 +2,9 @@
 
 var _ = require('lodash');
 
+var ReactIntl = require('react-intl');
+var IntlMixin = ReactIntl.IntlMixin;
+var FormattedMessage = ReactIntl.FormattedMessage;
 var React = require('react');
 
 var Modal = require('react-bootstrap').Modal;
@@ -9,10 +12,11 @@ var Button = require('react-bootstrap').Button;
 var ButtonToolbar = require('react-bootstrap').ButtonToolbar;
 
 var paymentActions = require('../actions.js');
-
 var PaymentDetailContent = require('./payment-detail-content.jsx');
-
 var PaymentDetail = React.createClass({
+
+  mixins: [IntlMixin],
+
   propTypes: {
     onRequestHide: React.PropTypes.func
   },
@@ -39,7 +43,7 @@ var PaymentDetail = React.createClass({
           <div className="row">
             <div className="col-sm-7 col-sm-offset-2">
               <h4>
-                Are you sure you want to process this payment?
+                <FormattedMessage message={this.getIntlMessage('paymentProcessConfirm')} />
               </h4>
             </div>
             <div className="col-sm-3">

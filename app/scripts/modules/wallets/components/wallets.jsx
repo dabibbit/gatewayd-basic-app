@@ -8,6 +8,7 @@ var hotWalletBalances = new Balances([], {walletType: 'hot'});
 var coldWalletBalances = new Balances([], {walletType: 'cold'});
 
 var Wallets = React.createClass({
+
   componentDidMount: function() {
     var _this = this;
 
@@ -30,8 +31,8 @@ var Wallets = React.createClass({
   render: function() {
     return (
       <div>
-        <Wallet type={"hot"} collection={hotWalletBalances} />
-        <Wallet type={"cold"} collection={coldWalletBalances} />
+        <Wallet headerType={"hotWalletHeader"} collection={hotWalletBalances} />
+        <Wallet headerType={"coldWalletHeader"} collection={coldWalletBalances} />
       </div>
     );
   }

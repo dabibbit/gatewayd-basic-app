@@ -39,7 +39,7 @@ var ResizeSpan = React.createClass({
   render: function() {
     return(
       <p className={"truncate" + this.state.showClass}>
-        <span className="header" onClick={this.handleClick}>{this.props.header}: </span>
+        <span className="header" onClick={this.handleClick}>{this.props.header}</span>
         <span className="data" title={this.props.data}>{this.props.data}</span>
       </p>
     );

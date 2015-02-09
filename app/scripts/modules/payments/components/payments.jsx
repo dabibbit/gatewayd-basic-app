@@ -4,6 +4,10 @@ var _ = require('lodash');
 var url = require('url');
 var Backbone= require('backbone');
 
+var stringLib = require('../../../../i18n/messages');
+var ReactIntl = require('react-intl');
+var IntlMixin = ReactIntl.IntlMixin;
+var FormattedMessage = ReactIntl.FormattedMessage;
 var React = require('react');
 var DocumentTitle = require('react-document-title');
 
@@ -11,7 +15,6 @@ var DocumentTitle = require('react-document-title');
 var Router = require('react-router');
 var ActiveState = require('react-router').ActiveState;
 var Link = require('react-router').Link;
-
 
 // React Bootstrap
 var ModalTrigger = require('react-bootstrap').ModalTrigger;
@@ -27,7 +30,7 @@ var paymentCreateFormModel = new PaymentCreateFormModel();
 var PaymentCreateForm = require('./payment-create.jsx');
 
 var Payments = React.createClass({
-  mixins: [ActiveState, Router.State],
+  mixins: [IntlMixin, ActiveState, Router.State],
 
   getInitialState: function() {
     return {
@@ -77,8 +80,8 @@ var Payments = React.createClass({
     direction = direction || 'incoming';
 
     var titleMap = {
-      incoming: 'Received Payments',
-      outgoing: 'Sent Payments'
+      incoming: this.getIntlMessage('paymentsTitleReceived'),
+      outgoing: this.getIntlMessage('paymentsTitleSent')
     };
 
     return titleMap[direction];
@@ -97,13 +100,13 @@ var Payments = React.createClass({
     // less than ideal, will refactor when we have pagination, if not sooner.
     // We could keep different collections for each type, but it depends on use case.
     var paymentItems = _.chain(this.state.payments)
-      .filter(function(payment) {
+      .filter(payment => {
         return payment.direction === _this.directionMap[direction];
       })
-      .filter(function(payment) {
+      .filter(payment => {
         return state === 'all' ? true : (payment.state === state);
       })
-      .map(function(payment) {
+      .map(payment => {
         var addressDefaults = {
           address: 'none',
           tag: 'none',
@@ -133,18 +136,34 @@ var Payments = React.createClass({
     if (direction === 'incoming') {
       tertiaryNav = (
         <div className="nav-tertiary">
-          <Link to='payments' params={{direction: 'incoming', state: 'all'}}>All</Link>
-          <Link to='payments' params={{direction: 'incoming', state: 'incoming'}}>Queued</Link>
-          <Link to='payments' params={{direction: 'incoming', state: 'succeeded'}}>Succeeded</Link>
+          <Link to='payments' params={{direction: 'incoming', state: 'all'}}>
+            <FormattedMessage message={this.getIntlMessage('paymentsNavAll')} />
+          </Link>
+          <Link to='payments' params={{direction: 'incoming', state: 'incoming'}}>
+            <FormattedMessage message={this.getIntlMessage('paymentsNavQueued')} />
+          </Link>
+          <Link to='payments' params={{direction: 'incoming', state: 'succeeded'}}>
+            <FormattedMessage message={this.getIntlMessage('paymentsNavSucceeded')} />
+          </Link>
         </div>);
     } else {
       tertiaryNav = (
         <div className="nav-tertiary">
-          <Link to='payments' params={{direction: 'outgoing', state: 'all'}}>All</Link>
-          <Link to='payments' params={{direction: 'outgoing', state: 'outgoing'}}>Queued</Link>
-          <Link to='payments' params={{direction: 'outgoing', state: 'pending'}}>Pending</Link>
-          <Link to='payments' params={{direction: 'outgoing', state: 'succeeded'}}>Succeeded</Link>
-          <Link to='payments' params={{direction: 'outgoing', state: 'failed'}}>Failed</Link>
+          <Link to='payments' params={{direction: 'outgoing', state: 'all'}}>
+            <FormattedMessage message={this.getIntlMessage('paymentsNavAll')} />
+          </Link>
+          <Link to='payments' params={{direction: 'outgoing', state: 'outgoing'}}>
+            <FormattedMessage message={this.getIntlMessage('paymentsNavQueued')} />
+          </Link>
+          <Link to='payments' params={{direction: 'outgoing', state: 'pending'}}>
+            <FormattedMessage message={this.getIntlMessage('paymentsNavPending')} />
+          </Link>
+          <Link to='payments' params={{direction: 'outgoing', state: 'succeeded'}}>
+            <FormattedMessage message={this.getIntlMessage('paymentsNavSucceeded')} />
+          </Link>
+          <Link to='payments' params={{direction: 'outgoing', state: 'failed'}}>
+            <FormattedMessage message={this.getIntlMessage('paymentsNavFailed')} />
+          </Link>
         </div>);
     }
 
@@ -153,16 +172,19 @@ var Payments = React.createClass({
         <div>
           <div className="row">
             <div className="col-sm-12 col-xs-12">
-              <h1>Payments:
+              <h1>
+                <FormattedMessage message={this.getIntlMessage('paymentsHeader')} />
                 <span className="header-links">
                   <Link to='payments' params={{direction: 'outgoing', state: 'all'}}>
-                    Sent
+                    <FormattedMessage message={this.getIntlMessage('paymentsNavSent')} />
                   </Link>
                   <Link to='payments' params={{direction: 'incoming', state: 'all'}}>
-                    Received
+                    <FormattedMessage message={this.getIntlMessage('paymentsNavReceived')} />
                   </Link>
-                  <ModalTrigger modal={<PaymentCreateForm model={paymentCreateFormModel} />}>
-                    <a>Send Payment</a>
+                  <ModalTrigger modal={<PaymentCreateForm {...stringLib} model={paymentCreateFormModel} />}>
+                    <a>
+                      <FormattedMessage message={this.getIntlMessage('paymentsNavSendPayment')} />
+                    </a>
                   </ModalTrigger>
                 </span>
               </h1>

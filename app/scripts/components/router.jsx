@@ -1,5 +1,7 @@
 "use strict";
 
+var ReactIntl = require('react-intl');
+var IntlMixin = ReactIntl.IntlMixin;
 var React = require('react');
 
 // needed for dev tools to work
@@ -50,7 +52,7 @@ var logoutPath = '/logout';
 var defaultPath = '/payments/outgoing/all';
 
 var AppModule = React.createClass({
-  mixins: [Navigation],
+  mixins: [IntlMixin, Navigation],
 
   getLogStatus: function(sessionModel) {
     return sessionModel.isLoggedIn();
@@ -117,11 +119,10 @@ var AppModule = React.createClass({
 var SessionComponentModule = React.createClass({
   render: function() {
     return (
-      <
-        SessionComponent
-          loginPath={loginPath}
-          logoutPath={logoutPath}
-          defaultPath={defaultPath}
+      <SessionComponent
+        loginPath={loginPath}
+        logoutPath={logoutPath}
+        defaultPath={defaultPath}
       />
     );
   }
@@ -130,7 +131,7 @@ var SessionComponentModule = React.createClass({
 var PaymentsModule = React.createClass({
   render: function() {
     return (
-      <Payments />
+      <Payments/>
     );
   }
 });

@@ -1,7 +1,11 @@
 "use strict";
 
+var stringLib = require('../../../../i18n/messages');
 var _ = require('lodash');
 var moment = require('moment');
+var ReactIntl = require('react-intl');
+var IntlMixin = ReactIntl.IntlMixin;
+var FormattedMessage = ReactIntl.FormattedMessage;
 var React = require('react');
 var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var PaymentDetailModal = require('./payment-detail-modal.jsx');
@@ -10,6 +14,9 @@ var PaymentDetailContent = require('./payment-detail-content.jsx');
 var Chevron = require('../../../shared/components/glyphicon/chevron.jsx');
 
 var Payment = React.createClass({
+
+  mixins: [IntlMixin],
+
   propTypes: {
     retryButtonClickHandler: React.PropTypes.func
   },
@@ -36,49 +43,64 @@ var Payment = React.createClass({
     };
   },
 
-  render: function() {
-    var rippleGraphLink = 'http://www.ripplecharts.com/#/graph/' + this.props.transaction_hash;
-    var getRefreshIconClass = function(isPolling) {
-      return isPolling ? 'glyphicon glyphicon-refresh glyphicon-spin' : '';
-    };
-    var doneButton, retryLink, refreshIcon, fromAddress, toAddress;
+  getAddressData: function(direction) {
+    var headerFrom, headerTo;
 
-    // display 'From Address' for received payments or 'To Address' for sent payments
-    if (this.props.direction === 'from-ripple') {
-      fromAddress = (
-        <ResizeSpan
-          header="From Address"
+    headerFrom = <FormattedMessage message={this.getIntlMessage('paymentFromAddress')} />;
+    headerTo = <FormattedMessage message={this.getIntlMessage('paymentToAddress')} />;
+
+    if (direction === 'from-ripple') {
+      return {
+        fromAddress: (<ResizeSpan
+          header={headerFrom}
           data={this.props.fromAddress.address}
-        />
-      );
-      toAddress = <p>&nbsp;</p>;
+        />),
+        toAddress: <p>&nbsp;</p>
+      }
     } else {
-      toAddress = (
-        <ResizeSpan
-          header="To Address"
+      return {
+        toAddress: (<ResizeSpan
+          header={headerTo}
           data={this.props.toAddress.address}
-        />
-      );
-      fromAddress = <p>&nbsp;</p>;
+        />),
+        fromAddress: <p>&nbsp;</p>
+      }
     }
+  },
 
-    if (this.props.state === 'incoming') {
-      doneButton = (
-        <ModalTrigger modal={<PaymentDetailModal {...this.props} />}>
+  getDoneButton: function(state) {
+    if (state === 'incoming') {
+
+      //todo, roll our own modals
+      //must pass stringLib back in here since the modal is not rendered
+      //as part of the top level wrapper node
+      return (
+        <ModalTrigger  modal={<PaymentDetailModal {...stringLib} {...this.props} />}>
           <button className="btn pull-right">
-            Process
+            <FormattedMessage message={this.getIntlMessage('paymentProcess')} />
           </button>
         </ModalTrigger>
       );
     } else {
-      doneButton = false;
+      return false;
     }
+  },
 
-    // show retry link for failed payments
+  render: function() {
+    var rippleGraphLink, getRefreshIconClass, retryLink;
+
+    rippleGraphLink = `http://www.ripplecharts.com/#/graph/${this.props.transaction_hash}`;
+
+    //todo use inline helper method where setting className
+    getRefreshIconClass = function(isPolling) {
+      return isPolling ? 'glyphicon glyphicon-refresh glyphicon-spin' : '';
+    };
+
+        // show retry link for failed payments
     if (this.props.state === 'failed') {
       retryLink=(
         <a onClick={this.handleRetryButtonClick.bind(this,this.props.id)}>
-          Retry?
+          <FormattedMessage message={this.getIntlMessage('paymentRetry')} />
         </a>
       );
     } else {
@@ -90,43 +112,47 @@ var Payment = React.createClass({
         <div className="row">
           <div className="col-sm-4">
             <p>
-              <span className="header">To Amount: </span>
-              <span className="data">{this.props.to_amount} </span>
+              <span className="header">
+                <FormattedMessage message={this.getIntlMessage('paymentToAmount')} />
+              </span>
+              <span className="data">{this.props.to_amount}</span>
               <span className="currency">{this.props.to_currency}</span>
             </p>
-            {toAddress}
+            {this.getAddressData(this.props.direction).toAddress}
             <p>
-              <span className="header">Destination Tag: </span>
+              <span className="header">
+                <FormattedMessage message={this.getIntlMessage('paymentDestinationTag')} />
+              </span>
               <span className="data">{this.props.toAddress.tag}</span>
             </p>
           </div>
           <div className="col-sm-4">
             <p>
-              <span className="header">From Amount: </span>
-              <span className="data">{this.props.from_amount} </span>
+              <span className="header">
+                <FormattedMessage message={this.getIntlMessage('paymentFromAmount')} />
+              </span>
+              <span className="data">{this.props.from_amount}</span>
               <span className="currency">{this.props.from_currency}</span>
             </p>
-            {fromAddress}
+            {this.getAddressData(this.props.direction).fromAddress}
           </div>
           <div className="col-sm-4 text-right">
             <p>
-              <span className="header">Status: </span>
+              <span className="header">
+                <FormattedMessage message={this.getIntlMessage('paymentStatus')} />
+              </span>
               <span className="data">{this.props.state} </span>
               <span className="header">{retryLink} </span>
               <span className={getRefreshIconClass(this.props.isPolling)} />
             </p>
-            {doneButton}
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-sm-8">
-          </div>
-          <div className="col-sm-4">
+            {this.getDoneButton(this.props.state)}
           </div>
         </div>
         <div className="row">
           <div className="col-sm-12">
-            <a href={rippleGraphLink} target="_blank">Ripple Graph Link</a>
+            <a href={rippleGraphLink} target="_blank">
+              <FormattedMessage message={this.getIntlMessage('paymentGraphLink')} />
+            </a>
           </div>
         </div>
         <div className="clearfix">

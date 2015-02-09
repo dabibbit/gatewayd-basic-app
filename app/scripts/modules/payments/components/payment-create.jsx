@@ -1,6 +1,9 @@
 "use strict";
 
 var _ = require('lodash');
+var ReactIntl = require('react-intl');
+var IntlMixin = ReactIntl.IntlMixin;
+var FormattedMessage = ReactIntl.FormattedMessage;
 var React = require('react');
 var Modal = require('react-bootstrap').Modal;
 var Row = require('react-bootstrap').Row;
@@ -11,6 +14,9 @@ var Button = require('react-bootstrap').Button;
 var paymentActions = require('../actions');
 
 var PaymentCreate = React.createClass({
+
+  mixins: [IntlMixin],
+
   validationMap: {
     valid: 'success',
     invalid: 'warning'
@@ -56,7 +62,7 @@ var PaymentCreate = React.createClass({
 
     this.setState({
       disableForm: true,
-      submitButtonLabel: 'Sending Payment...',
+      submitButtonLabel: 'sendSubmitSending'
     });
 
     paymentActions.sendPaymentAttempt(payment);
@@ -65,7 +71,7 @@ var PaymentCreate = React.createClass({
   handleSubmissionError: function() {
     this.setState({
       disableForm: false,
-      submitButtonLabel: 'Re-Submit Payment?',
+      submitButtonLabel: 'sendSubmitRetry'
     });
   },
 
@@ -176,7 +182,7 @@ var PaymentCreate = React.createClass({
       invoice_id: {},
       unprocessed_memos: {},
       disableForm: false,
-      submitButtonLabel: 'Submit Payment',
+      submitButtonLabel: 'sendSubmitSend'
     };
   },
 
@@ -195,22 +201,37 @@ var PaymentCreate = React.createClass({
     this.props.model.off('invalid validationComplete sync error addressProcessed');
   },
 
-  render: function() {
+  getLabel: function(key, type) {
+    if (!key) {
+      return false;
+    }
 
-    var requiredLabel = function(labelName) {
+    if (type === 'required') {
       return (
         <div>
-          <Label bsStyle="info">Required</Label> {labelName}
+          <Label bsStyle="info">
+            <FormattedMessage message={this.getIntlMessage('sendLabelRequired')} />
+          </Label>&nbsp;
+          <FormattedMessage message={this.getIntlMessage(key)} />
         </div>
       );
-    };
-
-    var errorMessageLabel = function(errorMessage) {
+    } else {
       return (
-        <Label bsStyle="warning">{errorMessage}</Label>
+        <FormattedMessage message={this.getIntlMessage(key)} />
       );
-    };
+    }
+  },
 
+  //todo: when we localize error strings, map them here
+  getMessage: function(message, type) {
+    type = type || 'info';
+
+    return (
+      <Label bsStyle={type}>{message}</Label>
+    );
+  },
+
+  render: function() {
     return (
       <Modal
         title="Send Payment"
@@ -221,74 +242,76 @@ var PaymentCreate = React.createClass({
         <div className="modal-body">
           <form onSubmit={this.handleSubmit}>
             <Input type="text" ref="unprocessed_address"
-              label={requiredLabel("Destination Address: ")}
+              label={this.getLabel('sendLabelAddress', 'required')}
               bsStyle={this.validationMap[this.state.unprocessed_address.inputState]}
               disabled={this.state.disableForm || this.state.disableAddressField}
               onBlur={this.validateAddress.bind(this, false)}
               hasFeedback
               autoFocus={true}
             />
-            {errorMessageLabel(this.state.unprocessed_address.errorMessage)}
+            {this.getMessage(this.state.unprocessed_address.errorMessage, 'warning')}
             <Input type="hidden" ref="address" value={this.state.addressValue} />
             <Row>
               <Col xs={6}>
                 <Input type="tel" ref="amount"
-                  label={requiredLabel("Amount: ")}
+                  label={this.getLabel('sendLabelAmount', 'required')}
                   bsStyle={this.validationMap[this.state.amount.inputState]}
                   disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'amount')}
                   hasFeedback
                 />
-                {errorMessageLabel(this.state.amount.errorMessage)}
+                {this.getMessage(this.state.amount.errorMessage, 'warning')}
               </Col>
               <Col xs={6}>
                 <Input type="text" ref="currency"
-                  label={requiredLabel("Currency: ")}
+                  label={this.getLabel('sendLabelCurrency', 'required')}
                   bsStyle={this.validationMap[this.state.currency.inputState]}
                   disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'currency')}
                   hasFeedback
                 />
-                {errorMessageLabel(this.state.currency.errorMessage)}
+                {this.getMessage(this.state.currency.errorMessage, 'warning')}
               </Col>
             </Row>
             <Row>
               <Col xs={6}>
                 <Input type="tel" ref="destinationTag"
-                  label="Destination Tag:"
+                  label={this.getLabel('sendLabelDestinationTag')}
                   bsStyle={this.validationMap[this.state.destinationTag.inputState]}
                   disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'destinationTag')}
                   hasFeedback
                 />
-                {errorMessageLabel(this.state.destinationTag.errorMessage)}
+                {this.getMessage(this.state.destinationTag.errorMessage, 'warning')}
               </Col>
               <Col xs={6}>
                 <Input type="tel" ref="source_tag"
-                  label="Source Tag:"
+                  label={this.getLabel('sendLabelSourceTag')}
                   bsStyle={this.validationMap[this.state.source_tag.inputState]}
                   disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'source_tag')}
                   hasFeedback
                 />
-                {errorMessageLabel(this.state.source_tag.errorMessage)}
+                {this.getMessage(this.state.source_tag.errorMessage, 'warning')}
               </Col>
             </Row>
             <Input type="text" ref="invoice_id"
-              label="Invoice Id (SHA256):"
+              label={this.getLabel('sendLabelInvoiceId')}
               bsStyle={this.validationMap[this.state.invoice_id.inputState]}
               disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'invoice_id')}
               hasFeedback
             />
-            {errorMessageLabel(this.state.invoice_id.errorMessage)}
+            {this.getMessage(this.state.invoice_id.errorMessage, 'warning')}
             <Input type="textarea" ref="unprocessed_memos"
-              label="Memos:"
+              label={this.getLabel('sendLabelMemos')}
               bsStyle={this.validationMap[this.state.unprocessed_memos.inputState]}
               disabled={this.state.disableForm} onBlur={this.validateField.bind(this, 'unprocessed_memos')}
               hasFeedback
             />
-            {errorMessageLabel(this.state.unprocessed_memos.errorMessage)}
+            {this.getMessage(this.state.unprocessed_memos.errorMessage, 'warning')}
             <Input type="hidden" ref="memos" value={this.state.memosValue} />
             <Button className="pull-right" bsStyle="primary" bsSize="large" type="submit"
               disabled={this.state.disableForm || this.state.disableSubmitButton}
               block>
-              {this.state.submitButtonLabel}
+              <FormattedMessage
+                message={this.getIntlMessage(this.state.submitButtonLabel)}
+              />
             </Button>
           </form>
         </div>
