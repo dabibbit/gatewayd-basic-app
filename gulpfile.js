@@ -415,6 +415,7 @@ gulp.task('watch', function() {
   gulp.watch('./app/styles/**/*.scss', ['sass']);
   gulp.watch('./app/*.html', ['copy']);
   gulp.watch('./app/scripts/**/*.js', ['js']);
+  gulp.watch('./app/i18n/**/*.js', ['js']);
   gulp.watch('./app/scripts/**/*.jsx', ['js']);
   gulp.watch('./app/scripts/**/*.json', ['js']);
   gulp.watch('./dist/' + '**/*.{html,css,js}').on('change', function() {
