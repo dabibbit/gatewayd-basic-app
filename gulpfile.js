@@ -32,10 +32,7 @@ var merge = require('merge-stream');
 
 var browserify = require('browserify');
 var del = require('del');
-var reactify = require('reactify');
-var reactifyES6 = function(file) {
-  return reactify(file, {'es6': true});
-};
+var babelify = require('babelify');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var uglify = require('gulp-uglify');
@@ -281,7 +278,7 @@ gulp.task('js', function() {
 
   // Browserify/bundle the JS.
   return browserify(paths.main_js)
-    .transform(reactifyES6)
+    .transform(babelify)
     .bundle()
     .pipe(source('bundle.js'))
     .pipe(buffer())
