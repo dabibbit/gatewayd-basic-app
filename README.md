@@ -181,7 +181,7 @@ The quoting app requires the gateway's user auth and basic auth to be disabled t
 6. Edit the basic app's **secrets.json** file to configure from which gatewayd instance you want to monitor (*url*).
 
     ```
-    $ vim app-config.json
+    $ vim secrets.json
     ```
 
     {
@@ -197,8 +197,8 @@ The quoting app requires the gateway's user auth and basic auth to be disabled t
     If you get an EMFILE error, you need to increase the maximum number of files than can be opened and processes that can be used:
 
     ```
-    $ ulimit -n 1000
-    $ ulimit -u 1000
+    $ ulimit -n 2048
+    $ ulimit -u 2048
     ```
 
 8. In your browser, access the local webapp via the default url or the port at localhost specified from step 6:
