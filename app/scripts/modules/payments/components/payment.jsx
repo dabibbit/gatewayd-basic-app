@@ -157,7 +157,7 @@ var Payment = React.createClass({
         </div>
         <div className="clearfix">
           <span className="date pull-left">
-            {moment(this.props.createdAt).format('MMM D, YYYY HH:mm z')}
+            {moment(this.props.createdAt).format('MMM D, YYYY HH:mm:ss.SSS z')}
           </span>
           <Chevron
             clickHandler={this.handleDetailIconClick.bind(this, this.props.id)}

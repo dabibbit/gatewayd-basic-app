@@ -33,7 +33,7 @@ var PaymentDetailContent = React.createClass({
       <div className={this.props.paymentDetailClassName}>
         <div className="row border-bottom">
           <FormattedMessage
-            updatedAt={moment(this.props.updatedAt).format('MMM D, YYYY HH:mm z')}
+            updatedAt={moment(this.props.updatedAt).format('MMM D, YYYY HH:mm:ss.SSS z')}
             message={this.getIntlMessage('paymentUpdated')}
           />
         </div>
